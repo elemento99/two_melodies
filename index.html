@@ -57,26 +57,26 @@
         'C8'
       ];
 
-      // Function to get notes by level
-      function getNotesByLevel(level) {
+      // Function to get notes by level (extended octaves)
+      function getNotesByLevel(level, scale) {
         const indexC4 = allPianoNotes.indexOf('C4');
         const totalNotes = level;
 
         let notes = [];
-        const centerNotes = [
-          'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4',
-        ];
+        const lowerOctaveLimit = Math.max(0, 4 - Math.floor(level / 10));
+        const upperOctaveLimit = Math.min(8, 4 + Math.floor(level / 10));
 
-        for (let i = 1; i <= level; i++) {
-          const below = indexC4 - i;
-          const above = indexC4 + i;
-
-          if (below >= 0) notes.unshift(allPianoNotes[below]);
-          if (above < allPianoNotes.length) notes.push(allPianoNotes[above]);
+        // Generate notes for the scale in the available octaves
+        for (let i = lowerOctaveLimit; i <= upperOctaveLimit; i++) {
+          scale.forEach(note => {
+            const noteWithOctave = `${note}${i}`;
+            if (allPianoNotes.includes(noteWithOctave)) {
+              notes.push(noteWithOctave);
+            }
+          });
         }
 
-        // Combine center notes and expanded notes by level
-        return [...centerNotes, ...notes];
+        return notes;
       }
 
       // Function to check if interval is valid
@@ -84,12 +84,12 @@
         return Math.abs(nextNoteIndex - previousNoteIndex) <= maxInterval;
       }
 
-      // Function to generate random notes
-      function generateRandomNotes(n, maxInterval) {
+      // Function to generate random notes from the scale
+      function generateRandomNotes(n, maxInterval, level) {
         const key = document.getElementById('key').value;
         const scale = majorScales[key];
-        const availableNotes = scale.map(note => `${note}4`); // Assuming notes in the 4th octave
-        
+        const availableNotes = getNotesByLevel(level, scale); // Use dynamic notes based on level
+
         const sequence = [];
         let previousNoteIndex = Math.floor(Math.random() * availableNotes.length);
 
@@ -108,7 +108,9 @@
 
       // Function to update notes display
       function updateNotes(level) {
-        const availableNotes = getNotesByLevel(level);
+        const key = document.getElementById('key').value;
+        const scale = majorScales[key];
+        const availableNotes = getNotesByLevel(level, scale);
         notesDisplay.textContent = availableNotes.join(', ');
       }
 
@@ -141,7 +143,8 @@
       document.getElementById('generateNotes').addEventListener('click', function () {
         const n = Math.min(50, Math.max(1, parseInt(numNotesInput.value))); // Ensure n is between 1 and 50
         const maxInterval = parseInt(maxIntervalInput.value);
-        const sequence = generateRandomNotes(n, maxInterval);
+        const level = parseInt(slider.value); // Get the current level
+        const sequence = generateRandomNotes(n, maxInterval, level);
         displaySequence(sequence);
       });
     </script>

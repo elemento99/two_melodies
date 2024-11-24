@@ -176,8 +176,6 @@ function generateRandomRhythm() {
 }
 
 
-
-
 document.getElementById('toggle-visibility').addEventListener('click', toggleVisibility);
 document.getElementById('play-rhythm').addEventListener('click', playRhythm);
 
@@ -190,11 +188,17 @@ function toggleVisibility() {
         rhythmContainer.style.display = 'none'; // Ocultar
     }
 }
-const toggleButton = document.getElementById("toggleSequence");
+
 const sequenceContainer = document.getElementById("sequenceContainer");
 
-toggleButton.addEventListener("click", () => {
-  sequenceContainer.hidden = !sequenceContainer.hidden;
+document.getElementById('toggleSequence').addEventListener('click', function () {
+    const sequenceContainer = document.getElementById('sequenceContainer');
+    // Alternar el display entre block (visible) y none (oculto)
+    if (sequenceContainer.style.display === 'none') {
+        sequenceContainer.style.display = 'block';
+    } else {
+        sequenceContainer.style.display = 'none';
+    }
 });
 // Asumiendo que ya tienes el código para configurar el BPM del slider
 bpmSlider.addEventListener('input', () => {

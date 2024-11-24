@@ -50,8 +50,20 @@
   <label for="bpmSlider">BPM: <span id="bpmDisplay">120</span></label>
   <input type="range" id="bpmSlider" min="20" max="300" value="120" />
   <button id="stop-loop">Detener Loop</button>
+  <button id="toggleDrone">Toggle Drone</button>
+  <div>
 
+    <label for="octaveSelector">Octave:</label>
+    <select id="octaveSelector">
+      <option value="2">2</option>
+      <option value="3" selected>3</option>
+      <option value="4">4</option>
 
+    </select>
+  </div>
+  <h2>Random Sound Effects with Tone.js</h2>
+  <button id="playRandomSound">Play Random Sound</button>
+  <button id="stopSound">Stop Sound</button>
 </body>
 
 </html>

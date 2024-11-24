@@ -75,15 +75,14 @@ body {
     width: 90%;
     text-align: center;
   }
-  
   #notesDisplay, #sequenceDisplay {
     color: #bb86fc;
     
   }
   #availableNotesContainer{
     max-width: 70%;
+    align-items: center;
   }
-
   div {
     display: flex;
     flex-direction: column;

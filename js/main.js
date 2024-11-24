@@ -34,7 +34,7 @@ const piano = new Tone.Sampler({
     release: 1,
     baseUrl: 'https://tonejs.github.io/audio/salamander/',
 }).toDestination();
-// Major scales by key
+
 const majorScales = {
     C: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
     D: ['D', 'E', 'F#', 'G', 'A', 'B', 'C#'],
@@ -45,7 +45,7 @@ const majorScales = {
     B: ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#'],
 };
 
-// All piano notes
+
 const allPianoNotes = [
     'C0', 'C#0', 'D0', 'D#0', 'E0', 'F0', 'F#0', 'G0', 'G#0', 'A0', 'A#0', 'B0',
     'C1', 'C#1', 'D1', 'D#1', 'E1', 'F1', 'F#1', 'G1', 'G#1', 'A1', 'A#1', 'B1',
@@ -58,7 +58,7 @@ const allPianoNotes = [
     'C8'
 ];
 
-// Function to get notes by level (extended octaves)
+
 function getNotesByLevel(level, scale) {
     const indexC4 = allPianoNotes.indexOf('C4');
     const totalNotes = level;
@@ -80,7 +80,7 @@ function getNotesByLevel(level, scale) {
     return notes;
 }
 let generatedSequence = []
-// Generate sequence when button is clicked
+
 document.getElementById('generateNotes').addEventListener('click', function () {
     const n = Math.min(50, Math.max(1, parseInt(numNotesInput.value))); // Asegurarse de que n esté entre 1 y 50
     const maxInterval = parseInt(maxIntervalInput.value);
@@ -91,16 +91,16 @@ document.getElementById('generateNotes').addEventListener('click', function () {
     console.log(generatedSequence)
 });
 
-// Function to check if interval is valid
+
 function isValidInterval(nextNoteIndex, previousNoteIndex, maxInterval) {
     return Math.abs(nextNoteIndex - previousNoteIndex) <= maxInterval;
 }
 
-// Function to generate random notes from the scale
+
 function generateRandomNotes(n, maxInterval, level) {
     const key = document.getElementById('key').value;
     const scale = majorScales[key];
-    const availableNotes = getNotesByLevel(level, scale); // Obtener notas disponibles según el nivel
+    const availableNotes = getNotesByLevel(level, scale);
 
     const sequence = [];
     let previousNoteIndex = Math.floor(Math.random() * availableNotes.length);
@@ -118,7 +118,7 @@ function generateRandomNotes(n, maxInterval, level) {
     return sequence;
 }
 
-// Function to update notes display
+
 function updateNotes(level) {
     const key = document.getElementById('key').value;
     const scale = majorScales[key];
@@ -126,12 +126,12 @@ function updateNotes(level) {
     notesDisplay.textContent = availableNotes.join(', ');
 }
 
-// Function to display sequence
+
 function displaySequence(sequence) {
     sequenceDisplay.textContent = sequence.join(', ');
 }
 
-// Event listeners
+
 const slider = document.getElementById('difficultyLevel');
 const levelValue = document.getElementById('levelValue');
 const notesDisplay = document.getElementById('notesDisplay');
@@ -139,12 +139,12 @@ const sequenceDisplay = document.getElementById('sequenceDisplay');
 const numNotesInput = document.getElementById('numNotes');
 const maxIntervalInput = document.getElementById('maxInterval');
 
-// Update UI on load
+
 window.addEventListener('load', function () {
     updateNotes(1);
 });
 
-// Update UI when slider value changes
+
 slider.addEventListener('input', function () {
     const level = parseInt(slider.value);
     levelValue.textContent = `Level ${level}`;
@@ -152,7 +152,7 @@ slider.addEventListener('input', function () {
 });
 
 
-const durations = ['8n', '4n', '2n', '16n']; // Notación de duración de las notas
+const durations = ['8n', '4n', '2n', '16n'];
 
 function generateRandomRhythm() {
     const rhythm = [];
@@ -193,52 +193,51 @@ const sequenceContainer = document.getElementById("sequenceContainer");
 
 document.getElementById('toggleSequence').addEventListener('click', function () {
     const sequenceContainer = document.getElementById('sequenceContainer');
-    // Alternar el display entre block (visible) y none (oculto)
+
     if (sequenceContainer.style.display === 'none') {
         sequenceContainer.style.display = 'block';
     } else {
         sequenceContainer.style.display = 'none';
     }
 });
-// Asumiendo que ya tienes el código para configurar el BPM del slider
+
 bpmSlider.addEventListener('input', () => {
     const bpm = parseInt(bpmSlider.value, 10);
     bpmDisplay.textContent = bpm;
     Tone.Transport.bpm.value = bpm;
 });
 
-// Asumiendo que ya tienes el código para configurar el BPM del slider
+
 bpmSlider.addEventListener('input', () => {
     const bpm = parseInt(bpmSlider.value, 10);
     bpmDisplay.textContent = bpm;
     Tone.Transport.bpm.value = bpm;
 });
-let currentLoopId = null; // Guardar el ID del loop en ejecución
+let currentLoopId = null;
 
 function playRhythm() {
-    // Detener cualquier reproducción anterior
-    Tone.Transport.stop(); // Detiene el transporte (cualquier reproducción previa)
-    Tone.Transport.cancel(); // Cancela los eventos programados previos (por si hay algún evento pendiente)
 
-    // Si ya hay un loop en ejecución, lo cancelamos
+    Tone.Transport.stop();
+    Tone.Transport.cancel();
+
+
     if (currentLoopId !== null) {
-        currentLoopId.dispose(); // Cancela el loop anterior
+        currentLoopId.dispose();
     }
 
     const rhythm = generateRandomRhythm();
-    
 
 
-    // Generamos la combinación de notas y duraciones para el loop
+
+
     const combinacion = rhythm.map(item => ({
         nota: item ? item.note : null,
-        duracion: item ? item.duration : '4n' // Silencio si no hay nota
+        duracion: item ? item.duration : '4n'
     }));
 
-    // Usamos el tiempo de inicio del transporte para alinear la reproducción
 
 
-    // Configuramos el loop usando Tone.Loop
+
     currentLoopId = new Tone.Loop((time) => {
         combinacion.forEach(({ nota, duracion }, i) => {
             if (nota) {
@@ -246,16 +245,16 @@ function playRhythm() {
                 piano.triggerAttackRelease(nota, durationInSeconds, time + i * durationInSeconds);
             }
         });
-    }, '1m'); // Longitud del loop (1 compás)
+    }, '1m');
 
-    // Iniciar la reproducción al ritmo del BPM
+
     Tone.Transport.start();
-    currentLoopId.start(0); // Inicia el loop
+    currentLoopId.start(0);
 
     console.log('Ritmo en bucle:', combinacion);
 }
 
-// Función para detener el loop
+
 document.getElementById('stop-loop').addEventListener('click', function () {
     if (currentLoopId !== null) {
         currentLoopId.dispose(); // Detenemos el loop
@@ -264,47 +263,47 @@ document.getElementById('stop-loop').addEventListener('click', function () {
     }
 });
 
-// Tone.js setup
+
 const synths = [];
-const brownNoiseSynth = new Tone.Noise('brown').toDestination(); // Synth para brown noise
+const brownNoiseSynth = new Tone.Noise('brown').toDestination();
 brownNoiseSynth.volume.value = -27;
 
-const reverb = new Tone.Reverb(5).toDestination(); // Reverb para ambiente
+const reverb = new Tone.Reverb(5).toDestination();
 brownNoiseSynth.connect(reverb);
 
 let isPlaying = false;
 
-// Obtener los selectores del DOM
+
 const noteSelector = document.getElementById('key');
 const octaveSelector = document.getElementById('octaveSelector');
 
-// Función para obtener la nota raíz seleccionada
+
 function getSelectedRootNote() {
     const note = noteSelector.value;
     const octave = octaveSelector.value;
     return `${note}${octave}`;
 }
 
-// Crear el drone (sonido binaural)
+
 function createDrone(rootNote) {
-    const scale = Tone.Frequency(rootNote).harmonize([0, 7, 12, 19]); // Tónica, quinta, octava
-    
-    // Crear dos osciladores para efectos binaurales
+    const scale = Tone.Frequency(rootNote).harmonize([0, 7, 12, 19]);
+
+
     scale.forEach((freq, index) => {
         const leftOsc = new Tone.Oscillator(freq, 'sine').toDestination();
         const rightOsc = new Tone.Oscillator(freq * (1 + (index % 2 === 0 ? 0.001 : -0.001)), 'sine').toDestination(); // Desfase mínimo para binaural
         leftOsc.volume.value = -22;
         rightOsc.volume.value = -22;
-        
-        // Añadir a la lista de sintetizadores
+
+
         synths.push(leftOsc, rightOsc);
-        
-        // Empezar a reproducir en ambos canales (izquierda y derecha)
+
+
         leftOsc.start();
         rightOsc.start();
     });
 
-    // Empezar a reproducir el brown noise
+
     brownNoiseSynth.start();
 }
 
@@ -317,7 +316,7 @@ async function toggleDrone() {
             synth.dispose(); // Liberar recursos del sintetizador
         });
         synths.length = 0; // Limpiar la lista de sintetizadores
-        
+
         brownNoiseSynth.stop(); // Detener el brown noise
         isPlaying = false;
     } else {
@@ -327,14 +326,14 @@ async function toggleDrone() {
     }
 }
 
-// Evento para el botón drone
+
 document
     .getElementById('toggleDrone')
     .addEventListener('click', toggleDrone);
 
 
-     // Lista de archivos (puedes agregar más de la misma manera)
-      const fileList = `
+
+const fileList = `
       ahntone_c2.mp3
       ahntone_c3.mp3
       ahntone_c4.mp3
@@ -2735,96 +2734,96 @@ document
       zube_tube4_raindrops.mp3
       `;
 
-      // Función para transformar la lista de archivos en un objeto adecuado para 'effectsLibrary'
-      function transformToEffectsLibrary(fileList) {
-        const effects = fileList
-          .split('\n')
-          .map((file) => file.trim())
-          .filter((file) => file !== '');
 
-        const effectsLibrary = {
-          randomSounds: effects.map(
+function transformToEffectsLibrary(fileList) {
+    const effects = fileList
+        .split('\n')
+        .map((file) => file.trim())
+        .filter((file) => file !== '');
+
+    const effectsLibrary = {
+        randomSounds: effects.map(
             (file) => `https://tonejs.github.io/audio/berklee/${file}`
-          ),
-        };
+        ),
+    };
 
-        return effectsLibrary;
-      }
+    return effectsLibrary;
+}
 
-      // Crear el effectsLibrary
-      const effectsLibrary = transformToEffectsLibrary(fileList);
 
-      let sampler = null;
-      let playing = false; // Variable para controlar el estado de reproducción
+const effectsLibrary = transformToEffectsLibrary(fileList);
 
-      // Función para inicializar un sampler aleatorio
-      async function createRandomSampler() {
-        // Seleccionar un sonido aleatorio de la lista
-        const randomIndex = Math.floor(
-          Math.random() * effectsLibrary.randomSounds.length
-        );
-        const soundUrl = effectsLibrary.randomSounds[randomIndex];
+let sampler = null;
+let playing = false;
 
-        // Crear un sampler con el sonido seleccionado y pan aleatorio (izquierda o derecha)
-        const panValue = Math.random() > 0.5 ? -1 : 1; // -1 para izquierda, 1 para derecha
-        sampler = new Tone.Sampler({
-          C4: soundUrl,
-        }).toDestination();
 
-        sampler.set({
-          pan: panValue, // Asignar el pan aleatorio
-          volume: -Infinity, // Comenzar en volumen bajo
-        });
+async function createRandomSampler() {
 
-        // Cargar el sampler
-        await Tone.loaded();
-        return sampler;
-      }
+    const randomIndex = Math.floor(
+        Math.random() * effectsLibrary.randomSounds.length
+    );
+    const soundUrl = effectsLibrary.randomSounds[randomIndex];
 
-      // Función para reproducir los sonidos en secuencia
-      async function playNextSound() {
-        if (!playing) return; // Si no está en reproducción, no continuar
 
-        // Detener y eliminar el sampler anterior si existe
-        if (sampler) {
-          sampler.dispose();
-        }
+    const panValue = Math.random() > 0.5 ? -1 : 1;
+    sampler = new Tone.Sampler({
+        C4: soundUrl,
+    }).toDestination();
 
-        // Crear y reproducir el nuevo sampler
-        sampler = await createRandomSampler();
-        sampler.triggerAttackRelease('C4', '5s'); // Reproducir el sonido durante 5 segundos
+    sampler.set({
+        pan: panValue,
+        volume: -Infinity, 
+    });
 
-        // Aumentar el volumen gradualmente
-        sampler.volume.setValueAtTime(-Infinity, Tone.now());
-        sampler.volume.linearRampToValueAtTime(-15, Tone.now() + 1); // Aumentar volumen en 1 segundo
+    
+    await Tone.loaded();
+    return sampler;
+}
 
-        // Definir el tiempo aleatorio entre sonidos (entre 1 y 10 segundos)
-        const randomTime = Math.random() * 14 + 1; // Tiempo entre 1 y 10 segundos
-        setTimeout(playNextSound, randomTime * 1000); // Reproducir el siguiente sonido después de un tiempo aleatorio
 
-        // Iniciar fadeout 1 segundo después de comenzar a reproducir el sonido
-        setTimeout(() => {
-          sampler.volume.linearRampToValueAtTime(-Infinity, Tone.now() + 1); // Fadeout en 1 segundo
-        }, 3000);
-      }
+async function playNextSound() {
+    if (!playing) return; 
 
-      // Función para detener el sonido
-      function stopSound() {
-        if (sampler) {
-          sampler.dispose();
-          sampler = null;
-        }
-        playing = false; // Cambiar el estado a no reproducir
-      }
+    
+    if (sampler) {
+        sampler.dispose();
+    }
 
-      // Eventos de los botones
-      document
-        .getElementById('playRandomSound')
-        .addEventListener('click', () => {
-          Tone.start(); // Asegurar que Tone.js esté iniciado
-          playing = true; // Cambiar el estado a en reproducción
-          playNextSound(); // Iniciar la secuencia de sonidos
-        });
+    
+    sampler = await createRandomSampler();
+    sampler.triggerAttackRelease('C4', '5s'); //
 
-      document.getElementById('stopSound').addEventListener('click', stopSound);
+    // Aumentar el volumen gradualmente
+    sampler.volume.setValueAtTime(-Infinity, Tone.now());
+    sampler.volume.linearRampToValueAtTime(-15, Tone.now() + 1); 
+
+    
+    const randomTime = Math.random() * 14 + 1; 
+    setTimeout(playNextSound, randomTime * 1000); 
+
+    
+    setTimeout(() => {
+        sampler.volume.linearRampToValueAtTime(-Infinity, Tone.now() + 1); 
+    }, 3000);
+}
+
+
+function stopSound() {
+    if (sampler) {
+        sampler.dispose();
+        sampler = null;
+    }
+    playing = false; 
+}
+
+
+document
+    .getElementById('playRandomSound')
+    .addEventListener('click', () => {
+        Tone.start(); // Asegurar que Tone.js esté iniciado
+        playing = true; // Cambiar el estado a en reproducción
+        playNextSound(); // Iniciar la secuencia de sonidos
+    });
+
+document.getElementById('stopSound').addEventListener('click', stopSound);
 

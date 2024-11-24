@@ -7,6 +7,7 @@
   <title>Note Generator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.40/Tone.min.js"></script>
   <script type="module" src="js/main.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -34,23 +35,23 @@
   <input type="number" id="maxInterval" min="1" value="12" />
 
   <button id="generateNotes">Generate Sequence</button>
-  <p>Generated sequence: <span id="sequenceDisplay"></span></p>
+  <button id="toggleSequence">Mostrar/Ocultar Secuencia</button>
+  <p id="sequenceContainer">Generated sequence: <span id="sequenceDisplay"></span></p>
 
   <h2>Generador de Ritmo</h2>
   
   <!-- Aquí se mostrará el ritmo generado -->
-  <div id="rhythm-container" style="display: none;">
-    <div id="rhythm" class="rhythm"></div>
-  </div>
+
   
-  <button id="toggle-visibility">Mostrar/Ocultar Ritmo</button>
+  <button id="toggle-visibility" hidden>Mostrar/Ocultar Ritmo</button>
   <button id="play-rhythm">Reproducir Ritmo</button>
-  <div id="rhythm-container"></div>
+  <button id="stop-loop">Detener Loop</button>
+
 
   <label for="bpmSlider">BPM: <span id="bpmDisplay">120</span></label>
   <input type="range" id="bpmSlider" min="20" max="300" value="120" />
-  <button id="stop-loop">Detener Loop</button>
-  <button id="toggleDrone">Toggle Drone</button>
+
+
   <div>
 
     <label for="octaveSelector">Octave:</label>
@@ -60,6 +61,7 @@
       <option value="4">4</option>
 
     </select>
+    <button id="toggleDrone">Toggle Drone</button>
   </div>
   <h2>Random Sound Effects with Tone.js</h2>
   <button id="playRandomSound">Play Random Sound</button>

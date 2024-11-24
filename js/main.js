@@ -175,22 +175,7 @@ function generateRandomRhythm() {
     return rhythm;
 }
 
-function printRhythm(rhythm) {
-    const rhythmContainer = document.getElementById('rhythm-container');  // Cambiar de 'rhythm' a 'rhythm-container'
-    rhythmContainer.innerHTML = ''; // Limpiar el contenedor
 
-    rhythm.forEach((item) => {
-        const div = document.createElement('div');
-        if (item) {
-            div.textContent = `${item.note} (${item.duration})`;
-            div.classList.add('note');
-        } else {
-            div.textContent = 'Silencio';
-            div.classList.add('silence');
-        }
-        rhythmContainer.appendChild(div);
-    });
-}
 
 
 document.getElementById('toggle-visibility').addEventListener('click', toggleVisibility);
@@ -205,6 +190,12 @@ function toggleVisibility() {
         rhythmContainer.style.display = 'none'; // Ocultar
     }
 }
+const toggleButton = document.getElementById("toggleSequence");
+const sequenceContainer = document.getElementById("sequenceContainer");
+
+toggleButton.addEventListener("click", () => {
+  sequenceContainer.hidden = !sequenceContainer.hidden;
+});
 // Asumiendo que ya tienes el código para configurar el BPM del slider
 bpmSlider.addEventListener('input', () => {
     const bpm = parseInt(bpmSlider.value, 10);
@@ -231,14 +222,8 @@ function playRhythm() {
     }
 
     const rhythm = generateRandomRhythm();
-    printRhythm(rhythm);
+    
 
-    const rhythmContainer = document.getElementById('rhythm-container');
-    rhythmContainer.innerHTML = rhythm.map(item =>
-        item ? `${item.note} (${item.duration})` : 'Silencio'
-    ).join('<br>');
-
-    const synth = new Tone.Synth().toDestination();
 
     // Generamos la combinación de notas y duraciones para el loop
     const combinacion = rhythm.map(item => ({
@@ -247,7 +232,7 @@ function playRhythm() {
     }));
 
     // Usamos el tiempo de inicio del transporte para alinear la reproducción
-    let time = Tone.Transport.now();
+
 
     // Configuramos el loop usando Tone.Loop
     currentLoopId = new Tone.Loop((time) => {
@@ -275,10 +260,14 @@ document.getElementById('stop-loop').addEventListener('click', function () {
     }
 });
 
-
 // Tone.js setup
 const synths = [];
+const brownNoiseSynth = new Tone.Noise('brown').toDestination(); // Synth para brown noise
+brownNoiseSynth.volume.value = -27;
+
 const reverb = new Tone.Reverb(5).toDestination(); // Reverb para ambiente
+brownNoiseSynth.connect(reverb);
+
 let isPlaying = false;
 
 // Obtener los selectores del DOM
@@ -292,17 +281,28 @@ function getSelectedRootNote() {
     return `${note}${octave}`;
 }
 
-// Crear el acorde (tónica, quinta, octava)
+// Crear el drone (sonido binaural)
 function createDrone(rootNote) {
     const scale = Tone.Frequency(rootNote).harmonize([0, 7, 12, 19]); // Tónica, quinta, octava
-    scale.forEach((freq) => {
-        const synth = new Tone.Oscillator(freq, 'sine').connect(reverb);
-        synth.volume.value = -10; // Ajusta el volumen
-        synths.push(synth);
+    
+    // Crear dos osciladores para efectos binaurales
+    scale.forEach((freq, index) => {
+        const leftOsc = new Tone.Oscillator(freq, 'sine').toDestination();
+        const rightOsc = new Tone.Oscillator(freq * (1 + (index % 2 === 0 ? 0.001 : -0.001)), 'sine').toDestination(); // Desfase mínimo para binaural
+        leftOsc.volume.value = -22;
+        rightOsc.volume.value = -22;
+        
+        // Añadir a la lista de sintetizadores
+        synths.push(leftOsc, rightOsc);
+        
+        // Empezar a reproducir en ambos canales (izquierda y derecha)
+        leftOsc.start();
+        rightOsc.start();
     });
+
+    // Empezar a reproducir el brown noise
+    brownNoiseSynth.start();
 }
-
-
 
 // Iniciar y detener el drone
 async function toggleDrone() {
@@ -310,6 +310,7 @@ async function toggleDrone() {
     if (isPlaying) {
         synths.forEach((synth) => synth.stop());
         synths.length = 0; // Limpiar la lista de sintetizadores
+        padSynth.releaseAll(); // Detener el pad
         isPlaying = false;
     } else {
         const rootNote = getSelectedRootNote(); // Usar la nota seleccionada
@@ -318,6 +319,7 @@ async function toggleDrone() {
         isPlaying = true;
     }
 }
+
 
 // Evento para el botón drone
 document

@@ -79,7 +79,7 @@ body {
     color: #bb86fc;
     
   }
-  #availableNotesContainer{
+  .availableNotesContainer{
     max-width: 70%;
     align-items: center;
   }

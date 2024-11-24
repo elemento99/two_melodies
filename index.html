@@ -11,36 +11,38 @@
 </head>
 
 <body>
-  <label for="key">Select a key: </label>
-  <select id="key">
-    <option value="C">C</option>
-    <option value="D">D</option>
-    <option value="E">E</option>
-    <option value="F">F</option>
-    <option value="G">G</option>
-    <option value="A">A</option>
-    <option value="B">B</option>
-  </select>
+
+  <div>  <label for="key">Select a key: </label>
+    <select id="key">
+      <option value="C">C</option>
+      <option value="D">D</option>
+      <option value="E">E</option>
+      <option value="F">F</option>
+      <option value="G">G</option>
+      <option value="A">A</option>
+      <option value="B">B</option>
+    </select></div>
+
 
   <h2>Select the difficulty level</h2>
   <input type="range" id="difficultyLevel" min="1" max="38" value="1" />
   <span id="levelValue">Level 1</span>
 <div class="availableNotesContainer"><p>Available notes: <span id="notesDisplay"></span></p></div>
   
-
-  <label for="numNotes">Number of notes (max 50): </label>
-  <input type="number" id="numNotes" min="1" max="50" value="4" />
-
+<div>  <label for="numNotes">Number of notes (max 50): </label>
+  <input type="number" id="numNotes" min="1" max="50" value="4" /></div>
+<div>
   <label for="maxInterval">Maximum interval between notes (semitones): </label>
   <input type="number" id="maxInterval" min="1" value="12" />
+</div>
 
-  <button id="generateNotes">Generate Sequence</button>
-  <button id="toggleSequence">Show Answer</button>
+<div>  <button id="generateNotes">Generate Sequence</button>
+  <button id="toggleSequence">Show Answer</button></div>
+
   <p id="sequenceContainer" style="display: none;">Generated sequence: <span id="sequenceDisplay"></span></p>
   
   <h2>Melody generator</h2>
   
-  <!-- Aquí se mostrará el ritmo generado -->
 
   
   <button id="toggle-visibility" hidden>Mostrar/Ocultar Ritmo</button>

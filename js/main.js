@@ -80,6 +80,54 @@ function getNotesByLevel(level, scale) {
     return notes;
 }
 let generatedSequence = []
+let highSequence = []
+let lowSequence = []
+
+function generateLowOctaveSequence(scale) {
+    const lowerOctaveLimit = 1; // Octavas bajas (por ejemplo, 1-2)
+    const upperOctaveLimit = 2;
+    const notes = [];
+
+    for (let i = lowerOctaveLimit; i <= upperOctaveLimit; i++) {
+        scale.forEach(note => {
+            const noteWithOctave = `${note}${i}`;
+            if (allPianoNotes.includes(noteWithOctave)) {
+                notes.push(noteWithOctave);
+            }
+        });
+    }
+
+    // Generar secuencia corta de 5 notas aleatorias
+    const sequence = [];
+    for (let i = 0; i < 5; i++) {
+        const randomNote = notes[Math.floor(Math.random() * notes.length)];
+        sequence.push(randomNote);
+    }
+    return sequence;
+}
+
+function generateHighOctaveSequence(scale) {
+    const lowerOctaveLimit = 6; // Octavas altas (por ejemplo, 6-7)
+    const upperOctaveLimit = 7;
+    const notes = [];
+
+    for (let i = lowerOctaveLimit; i <= upperOctaveLimit; i++) {
+        scale.forEach(note => {
+            const noteWithOctave = `${note}${i}`;
+            if (allPianoNotes.includes(noteWithOctave)) {
+                notes.push(noteWithOctave);
+            }
+        });
+    }
+
+    // Generar secuencia corta de 5 notas aleatorias
+    const sequence = [];
+    for (let i = 0; i < 5; i++) {
+        const randomNote = notes[Math.floor(Math.random() * notes.length)];
+        sequence.push(randomNote);
+    }
+    return sequence;
+}
 
 document.getElementById('generateNotes').addEventListener('click', function () {
     const n = Math.min(50, Math.max(1, parseInt(numNotesInput.value))); // Asegurarse de que n esté entre 1 y 50
@@ -88,6 +136,13 @@ document.getElementById('generateNotes').addEventListener('click', function () {
     const sequence = generateRandomNotes(n, maxInterval, level); // Generar la secuencia de notas
     displaySequence(sequence); // Mostrar la secuencia
     generatedSequence = sequence; // Guardar la secuencia generada en la variable
+    const key = document.getElementById('key').value;
+    const scale = majorScales[key]
+    lowSequence = generateLowOctaveSequence(scale);
+    highSequence = generateHighOctaveSequence(scale);
+    // Mostrar secuencias generadas
+    console.log('Low Octave Sequence:', lowSequence);
+    console.log('High Octave Sequence:', highSequence);
     console.log(generatedSequence)
 });
 
@@ -2826,4 +2881,3 @@ document
     });
 
 document.getElementById('stopSound').addEventListener('click', stopSound);
-

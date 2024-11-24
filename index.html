@@ -22,11 +22,11 @@
     <option value="B">B</option>
   </select>
 
-  <h1>Select the difficulty level</h1>
+  <h2>Select the difficulty level</h2>
   <input type="range" id="difficultyLevel" min="1" max="38" value="1" />
   <span id="levelValue">Level 1</span>
-
-  <p>Available notes: <span id="notesDisplay"></span></p>
+<div id="availableNotesContainer"><p>Available notes: <span id="notesDisplay"></span></p></div>
+  
 
   <label for="numNotes">Number of notes (max 50): </label>
   <input type="number" id="numNotes" min="1" max="50" value="4" />
@@ -35,17 +35,17 @@
   <input type="number" id="maxInterval" min="1" value="12" />
 
   <button id="generateNotes">Generate Sequence</button>
-  <button id="toggleSequence">Mostrar/Ocultar Secuencia</button>
+  <button id="toggleSequence">Show Answer</button>
   <p id="sequenceContainer" style="display: none;">Generated sequence: <span id="sequenceDisplay"></span></p>
   
-  <h2>Generador de Ritmo</h2>
+  <h2>Melody generator</h2>
   
   <!-- Aquí se mostrará el ritmo generado -->
 
   
   <button id="toggle-visibility" hidden>Mostrar/Ocultar Ritmo</button>
-  <button id="play-rhythm">Reproducir Ritmo</button>
-  <button id="stop-loop">Detener Loop</button>
+  <button id="play-rhythm">Play melody</button>
+  <button id="stop-loop">Stop Loop</button>
 
 
   <label for="bpmSlider">BPM: <span id="bpmDisplay">120</span></label>

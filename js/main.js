@@ -304,22 +304,24 @@ function createDrone(rootNote) {
     brownNoiseSynth.start();
 }
 
-// Iniciar y detener el drone
 async function toggleDrone() {
     await Tone.start(); // Necesario para que funcione en navegadores modernos
     if (isPlaying) {
-        synths.forEach((synth) => synth.stop());
+        // Detener y limpiar todos los osciladores
+        synths.forEach((synth) => {
+            synth.stop();
+            synth.dispose(); // Liberar recursos del sintetizador
+        });
         synths.length = 0; // Limpiar la lista de sintetizadores
-        padSynth.releaseAll(); // Detener el pad
+        
+        brownNoiseSynth.stop(); // Detener el brown noise
         isPlaying = false;
     } else {
         const rootNote = getSelectedRootNote(); // Usar la nota seleccionada
         createDrone(rootNote);
-        synths.forEach((synth) => synth.start());
         isPlaying = true;
     }
 }
-
 
 // Evento para el botón drone
 document

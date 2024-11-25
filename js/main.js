@@ -309,9 +309,7 @@ brownNoiseSynth.connect(reverb);
 let isPlaying = false;
 
 
-
 const octaveSelector = document.getElementById('octaveSelector');
-
 
 function getSelectedRootNote() {
     const note = key.value;
@@ -425,9 +423,9 @@ document
         return nuevoArray;
     }
 
-    keySelect.addEventListener('change', () => {
-        const key = keySelect.value;
-        const nuevoArray = generarEscala(key, escala);
+    key.addEventListener('change', () => {
+        const keyAuxiliar = key.value;
+        const nuevoArray = generarEscala(keyAuxiliar, escala);
         escalaTonalidadElement.textContent = `Escala en tonalidad: ${nuevoArray.join(', ')}`;
     });
 
@@ -2841,94 +2839,109 @@ const fileList = `
       `;
 
 
-function transformToEffectsLibrary(fileList) {
-    const effects = fileList
-        .split('\n')
-        .map((file) => file.trim())
-        .filter((file) => file !== '');
-
-    const effectsLibrary = {
-        randomSounds: effects.map(
-            (file) => `https://tonejs.github.io/audio/berklee/${file}`
-        ),
-    };
-
-    return effectsLibrary;
-}
-
-
-const effectsLibrary = transformToEffectsLibrary(fileList);
-
-let sampler = null;
-let playing = false;
-
-
-async function createRandomSampler() {
-
-    const randomIndex = Math.floor(
-        Math.random() * effectsLibrary.randomSounds.length
-    );
-    const soundUrl = effectsLibrary.randomSounds[randomIndex];
-
-
-    const panValue = Math.random() > 0.5 ? -1 : 1;
-    sampler = new Tone.Sampler({
-        C4: soundUrl,
-    }).toDestination();
-
-    sampler.set({
-        pan: panValue,
-        volume: -Infinity, 
-    });
-
+      function transformToEffectsLibrary(fileList) {
+        console.log('Procesando fileList:', fileList); // Verifica el contenido del fileList
+        const effects = fileList
+            .split('\n')
+            .map((file) => file.trim())
+            .filter((file) => file !== '');
     
-    await Tone.loaded();
-    return sampler;
-}
-
-
-async function playNextSound() {
-    if (!playing) return; 
-
+        console.log('Efectos procesados:', effects); // Verifica que los efectos se han procesado correctamente
     
-    if (sampler) {
-        sampler.dispose();
+        const effectsLibrary = {
+            randomSounds: effects.map(
+                (file) => `https://tonejs.github.io/audio/berklee/${file}`
+            ),
+        };
+    
+        console.log('Librería de efectos:', effectsLibrary); // Verifica el contenido de la librería de efectos
+    
+        return effectsLibrary;
     }
-
     
-    sampler = await createRandomSampler();
-    sampler.triggerAttackRelease('C4', '5s'); //
-
-    // Aumentar el volumen gradualmente
-    sampler.volume.setValueAtTime(-Infinity, Tone.now());
-    sampler.volume.linearRampToValueAtTime(-15, Tone.now() + 1); 
-
+    // Suponiendo que fileList ya está definido en algún lugar
+    const effectsLibrary = transformToEffectsLibrary(fileList);
     
-    const randomTime = Math.random() * 14 + 1; 
-    setTimeout(playNextSound, randomTime * 1000); 
-
+    let sampler = null;
+    let playing = false;
     
-    setTimeout(() => {
-        sampler.volume.linearRampToValueAtTime(-Infinity, Tone.now() + 1); 
-    }, 3000);
-}
-
-
-function stopSound() {
-    if (sampler) {
-        sampler.dispose();
-        sampler = null;
+    async function createRandomSampler() {
+        console.log('Creando sampler aleatorio...');
+        const randomIndex = Math.floor(
+            Math.random() * effectsLibrary.randomSounds.length
+        );
+        const soundUrl = effectsLibrary.randomSounds[randomIndex];
+    
+        console.log('URL del sonido seleccionado:', soundUrl);
+    
+        const panValue = Math.random() > 0.5 ? -1 : 1;
+        console.log('Valor de paneo:', panValue);
+    
+        sampler = new Tone.Sampler({
+            C4: soundUrl,
+        }).toDestination();
+    
+        sampler.set({
+            pan: panValue,
+            volume: -Infinity,
+        });
+    
+        await Tone.loaded();
+        console.log('Sampler creado y cargado.');
+        return sampler;
     }
-    playing = false; 
-}
-
-
-document
-    .getElementById('playRandomSound')
-    .addEventListener('click', () => {
-        Tone.start(); // Asegurar que Tone.js esté iniciado
-        playing = true; // Cambiar el estado a en reproducción
-        playNextSound(); // Iniciar la secuencia de sonidos
+    
+    async function playNextSound() {
+        if (!playing) {
+            console.log('La reproducción está detenida.');
+            return;
+        }
+    
+        console.log('Reproduciendo siguiente sonido...');
+    
+        if (sampler) {
+            console.log('Eliminando sampler anterior.');
+            sampler.dispose();
+        }
+    
+        sampler = await createRandomSampler();
+        console.log('Sampler listo para reproducir.');
+        sampler.triggerAttackRelease('C4', '5s');
+    
+        sampler.volume.setValueAtTime(-Infinity, Tone.now());
+        sampler.volume.linearRampToValueAtTime(-15, Tone.now() + 1);
+    
+        const randomTime = Math.random() * 14 + 1;
+        console.log('Reproduciendo siguiente sonido en', randomTime, 'segundos.');
+    
+        setTimeout(playNextSound, randomTime * 1000);
+    
+        setTimeout(() => {
+            console.log('Reduciendo volumen.');
+            sampler.volume.linearRampToValueAtTime(-Infinity, Tone.now() + 1);
+        }, 3000);
+    }
+    
+    function stopSound() {
+        console.log('Deteniendo reproducción.');
+        if (sampler) {
+            sampler.dispose();
+            sampler = null;
+        }
+        playing = false;
+    }
+    
+    document
+        .getElementById('playRandomSound')
+        .addEventListener('click', () => {
+            console.log('Botón de reproducir presionado.');
+            Tone.start();
+            playing = true;
+            playNextSound();
+        });
+    
+    document.getElementById('stopSound').addEventListener('click', () => {
+        console.log('Botón de detener presionado.');
+        stopSound();
     });
-
-document.getElementById('stopSound').addEventListener('click', stopSound);
+    

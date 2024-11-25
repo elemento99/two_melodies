@@ -269,7 +269,7 @@ function playRhythm() {
         combinacion.forEach(({ nota, duracion }, i) => {
             if (nota) {
                 // Ajustar el volumen dinámicamente en cada repetición
-                const volumen = 0.3 + Math.random() * 1; // Rango dinámico de 0.5 a 1.5
+                const volumen = 0.2 + Math.random() * 1; // Rango dinámico de 0.5 a 1.5
                 const durationInSeconds = Tone.Time(duracion).toSeconds();
                 piano.triggerAttackRelease(nota, durationInSeconds, time + i * durationInSeconds, volumen);
 
@@ -315,7 +315,7 @@ function getSelectedRootNote() {
 
 
 function createDrone(rootNote) {
-    const scale = Tone.Frequency(rootNote).harmonize([0, 7, 12, 19]);
+    const scale = Tone.Frequency(rootNote).harmonize([0, 7, 12]);
 
 
     scale.forEach((freq, index) => {

@@ -12,23 +12,7 @@
 
 <body>
 
-  <div> <label for="key">Select a key: </label>
-    <select id="key">
-      <option value="C">C</option>
-      <option value="C#">C# / Db</option>
-      <option value="D">D</option>
-      <option value="D#">D# / Eb</option>
-      <option value="E">E</option>
-      <option value="F">F</option>
-      <option value="F#">F# / Gb</option>
-      <option value="G">G</option>
-      <option value="G#">G# / Ab</option>
-      <option value="A">A</option>
-      <option value="A#">A# / Bb</option>
-      <option value="B">B</option>
-    </select>
-  </div>
-
+ 
 
   <div>
     <h2>Select the difficulty level</h2>
@@ -95,8 +79,27 @@
     <input type="range" id="bpmSlider" min="20" max="300" value="120" />
   </div>
 
+<div>  <h2>Scales selector</h2>
+  <div> 
+    <select id="key">
+      <option value="C">Key: C</option>
+      <option value="C#">Key: C# / Db</option>
+      <option value="D">Key: D</option>
+      <option value="D#">Key: D# / Eb</option>
+      <option value="E">Key: E</option>
+      <option value="F">Key: F</option>
+      <option value="F#">Key: F# / Gb</option>
+      <option value="G">Key: G</option>
+      <option value="G#">Key: G# / Ab</option>
+      <option value="A">Key: A</option>
+      <option value="A#">Key: A# / Bb</option>
+      <option value="B">Key: B</option>
+    </select>
+  </div>
+</div>
 
 
+  <div></div>
   <div class="piano">
     <div class="tecla blanca presionada" data-nombre="0">1</div>
     <div class="tecla negra" data-nombre="1">1#</div>
@@ -110,6 +113,9 @@
     <div class="tecla blanca presionada" data-nombre="9">6</div>
     <div class="tecla negra" data-nombre="10">6#</div>
     <div class="tecla blanca presionada" data-nombre="11">7</div>
+
+
+  
 </div>
 
 

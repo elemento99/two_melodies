@@ -368,29 +368,43 @@ document
 
 
     const teclas = document.querySelectorAll('.tecla');
-    let escala = [];
+    let escala = []
+
+    function inicializarEscala() {
+        teclas.forEach((tecla) => {
+            if (tecla.classList.contains('presionada')) {
+                // Si la tecla ya está marcada como presionada, agregarla a la escala
+                const nombre = tecla.getAttribute('data-nombre');
+                if (!escala.includes(nombre)) {
+                    escala.push(nombre);
+                }
+            }
+        });
+
+        // Ordenar el arreglo escala y generar la escala inicial en el DOM
+        escala.sort((a, b) => a - b);
+        generarEscala(key.value, escala); // Asume que keySelect y generarEscala ya están definidos
+    }
+    inicializarEscala();
 
     teclas.forEach((tecla) => {
         tecla.addEventListener('click', () => {
             tecla.classList.toggle('presionada');
             const nombre = tecla.getAttribute('data-nombre');
-
-            // Agregar o quitar la tecla de la escala y ordenarla
+    
+            // Agregar o quitar la tecla de la escala
             if (escala.includes(nombre)) {
                 const index = escala.indexOf(nombre);
-                if (index > -1) {
-                    escala.splice(index, 1);
-                }
+                escala.splice(index, 1);
             } else {
                 escala.push(nombre);
             }
-
+    
             // Ordenar el arreglo de menor a mayor
             escala.sort((a, b) => a - b);
-
-            // Generar el nuevo array y actualizarlo en el DOM
-            const nuevoArray = generarEscala(keySelect.value, escala);
-
+    
+            // Generar la nueva escala en el DOM
+            generarEscala(key.value, escala);
         });
     });
 

@@ -58,76 +58,53 @@ const allPianoNotes = [
     'C8'
 ];
 
+const key = document.getElementById('key');
 
 function getNotesByLevel(level, scale) {
     const indexC4 = allPianoNotes.indexOf('C4');
     const totalNotes = level;
 
     let notes = [];
+    const notesCenter = [
+        'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4'
+    ];
+
+    // Expande las notas según el nivel
+    for (let i = 1; i <= level; i++) {
+        const lower = indexC4 - i;
+        const upper = indexC4 + i;
+
+        if (lower >= 0) notes.unshift(allPianoNotes[lower]);
+        if (upper < allPianoNotes.length) notes.push(allPianoNotes[upper]);
+    }
+
+    // Genera las notas de la escala en las octavas disponibles
+    const scaleNotes = [];
     const lowerOctaveLimit = Math.max(0, 4 - Math.floor(level / 10));
     const upperOctaveLimit = Math.min(8, 4 + Math.floor(level / 10));
 
-    // Generate notes for the scale in the available octaves
     for (let i = lowerOctaveLimit; i <= upperOctaveLimit; i++) {
         scale.forEach(note => {
             const noteWithOctave = `${note}${i}`;
             if (allPianoNotes.includes(noteWithOctave)) {
-                notes.push(noteWithOctave);
+                scaleNotes.push(noteWithOctave);
             }
         });
     }
 
-    return notes;
+    // Filtra las notas para que solo aparezcan las que pertenezcan a la escala
+    const scaleNotesSet = new Set(scale.map(note => note)); // Solo las notas de la escala sin la octava
+    const filteredNotes = [...notesCenter, ...notes].filter(note => {
+        const noteBase = note.slice(0, -1); // Extrae la nota sin la octava
+        return scaleNotesSet.has(noteBase); // Asegura que la nota pertenezca a la escala
+    });
+
+    // Combina las notas filtradas con las notas de la escala generada
+    return [...filteredNotes, ...scaleNotes];
 }
+
 let generatedSequence = []
-let highSequence = []
-let lowSequence = []
 
-function generateLowOctaveSequence(scale) {
-    const lowerOctaveLimit = 1; // Octavas bajas (por ejemplo, 1-2)
-    const upperOctaveLimit = 2;
-    const notes = [];
-
-    for (let i = lowerOctaveLimit; i <= upperOctaveLimit; i++) {
-        scale.forEach(note => {
-            const noteWithOctave = `${note}${i}`;
-            if (allPianoNotes.includes(noteWithOctave)) {
-                notes.push(noteWithOctave);
-            }
-        });
-    }
-
-    // Generar secuencia corta de 5 notas aleatorias
-    const sequence = [];
-    for (let i = 0; i < 5; i++) {
-        const randomNote = notes[Math.floor(Math.random() * notes.length)];
-        sequence.push(randomNote);
-    }
-    return sequence;
-}
-
-function generateHighOctaveSequence(scale) {
-    const lowerOctaveLimit = 6; // Octavas altas (por ejemplo, 6-7)
-    const upperOctaveLimit = 7;
-    const notes = [];
-
-    for (let i = lowerOctaveLimit; i <= upperOctaveLimit; i++) {
-        scale.forEach(note => {
-            const noteWithOctave = `${note}${i}`;
-            if (allPianoNotes.includes(noteWithOctave)) {
-                notes.push(noteWithOctave);
-            }
-        });
-    }
-
-    // Generar secuencia corta de 5 notas aleatorias
-    const sequence = [];
-    for (let i = 0; i < 5; i++) {
-        const randomNote = notes[Math.floor(Math.random() * notes.length)];
-        sequence.push(randomNote);
-    }
-    return sequence;
-}
 
 document.getElementById('generateNotes').addEventListener('click', function () {
     const n = Math.min(50, Math.max(1, parseInt(numNotesInput.value))); // Asegurarse de que n esté entre 1 y 50
@@ -136,13 +113,6 @@ document.getElementById('generateNotes').addEventListener('click', function () {
     const sequence = generateRandomNotes(n, maxInterval, level); // Generar la secuencia de notas
     displaySequence(sequence); // Mostrar la secuencia
     generatedSequence = sequence; // Guardar la secuencia generada en la variable
-    const key = document.getElementById('key').value;
-    const scale = majorScales[key]
-    lowSequence = generateLowOctaveSequence(scale);
-    highSequence = generateHighOctaveSequence(scale);
-    // Mostrar secuencias generadas
-    console.log('Low Octave Sequence:', lowSequence);
-    console.log('High Octave Sequence:', highSequence);
     console.log(generatedSequence)
 });
 
@@ -154,7 +124,8 @@ function isValidInterval(nextNoteIndex, previousNoteIndex, maxInterval) {
 
 function generateRandomNotes(n, maxInterval, level) {
     const key = document.getElementById('key').value;
-    const scale = majorScales[key];
+
+    const scale = generarEscala(key, escala) 
     const availableNotes = getNotesByLevel(level, scale);
 
     const sequence = [];
@@ -244,15 +215,24 @@ function toggleVisibility() {
     }
 }
 
-const sequenceContainer = document.getElementById("sequenceContainer");
+const modal = document.getElementById('sequenceModal');
+const btn = document.getElementById('toggleSequence');
+const closeBtn = document.getElementById('closeModal');
 
-document.getElementById('toggleSequence').addEventListener('click', function () {
-    const sequenceContainer = document.getElementById('sequenceContainer');
+// Mostrar el modal al hacer clic en el botón
+btn.addEventListener('click', function () {
+    modal.style.display = 'block';
+});
 
-    if (sequenceContainer.style.display === 'none') {
-        sequenceContainer.style.display = 'block';
-    } else {
-        sequenceContainer.style.display = 'none';
+// Cerrar el modal al hacer clic en el botón de cierre (X)
+closeBtn.addEventListener('click', function () {
+    modal.style.display = 'none';
+});
+
+// Cerrar el modal si se hace clic fuera de él
+window.addEventListener('click', function (event) {
+    if (event.target === modal) {
+        modal.style.display = 'none';
     }
 });
 
@@ -329,12 +309,12 @@ brownNoiseSynth.connect(reverb);
 let isPlaying = false;
 
 
-const noteSelector = document.getElementById('key');
+
 const octaveSelector = document.getElementById('octaveSelector');
 
 
 function getSelectedRootNote() {
-    const note = noteSelector.value;
+    const note = key.value;
     const octave = octaveSelector.value;
     return `${note}${octave}`;
 }
@@ -385,6 +365,63 @@ async function toggleDrone() {
 document
     .getElementById('toggleDrone')
     .addEventListener('click', toggleDrone);
+
+
+    const teclas = document.querySelectorAll('.tecla');
+    let escala = [];
+
+    teclas.forEach((tecla) => {
+        tecla.addEventListener('click', () => {
+            tecla.classList.toggle('presionada');
+            const nombre = tecla.getAttribute('data-nombre');
+
+            // Agregar o quitar la tecla de la escala y ordenarla
+            if (escala.includes(nombre)) {
+                const index = escala.indexOf(nombre);
+                if (index > -1) {
+                    escala.splice(index, 1);
+                }
+            } else {
+                escala.push(nombre);
+            }
+
+            // Ordenar el arreglo de menor a mayor
+            escala.sort((a, b) => a - b);
+
+            // Generar el nuevo array y actualizarlo en el DOM
+            const nuevoArray = generarEscala(keySelect.value, escala);
+
+        });
+    });
+
+    function generarEscala(key, escala) {
+        const notasCiclicas = [
+            'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G',
+            'G#', 'A', 'A#', 'B',
+            'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G',
+            'G#', 'A', 'A#'
+        ];
+        const indexTonica = notasCiclicas.indexOf(key);
+        const nuevoArray = [];
+        escala.forEach((nota) => {
+            const indiceReal = parseInt(nota) + indexTonica;
+            nuevoArray.push(notasCiclicas[indiceReal]);
+        });
+
+        return nuevoArray;
+    }
+
+    keySelect.addEventListener('change', () => {
+        const key = keySelect.value;
+        const nuevoArray = generarEscala(key, escala);
+        escalaTonalidadElement.textContent = `Escala en tonalidad: ${nuevoArray.join(', ')}`;
+    });
+
+
+
+
+
+
 
 
 

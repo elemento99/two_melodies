@@ -12,7 +12,7 @@
 
 <body>
 
-  <div>  <label for="key">Select a key: </label>
+  <div> <label for="key">Select a key: </label>
     <select id="key">
       <option value="C">C</option>
       <option value="D">D</option>
@@ -21,37 +21,57 @@
       <option value="G">G</option>
       <option value="A">A</option>
       <option value="B">B</option>
-    </select></div>
+    </select>
+  </div>
 
 
-  <h2>Select the difficulty level</h2>
-  <input type="range" id="difficultyLevel" min="1" max="38" value="1" />
-  <span id="levelValue">Level 1</span>
-<div class="availableNotesContainer"><p>Available notes: <span id="notesDisplay"></span></p></div>
-  
-<div>  <label for="numNotes">Number of notes (max 50): </label>
-  <input type="number" id="numNotes" min="1" max="50" value="4" /></div>
-<div>
-  <label for="maxInterval">Maximum interval between notes (semitones): </label>
-  <input type="number" id="maxInterval" min="1" value="12" />
-</div>
+  <div>
+    <h2>Select the difficulty level</h2>
+    <input type="range" id="difficultyLevel" min="1" max="38" value="1" />
+    <span id="levelValue">Level 1</span>
+  </div>
 
-<div>  <button id="generateNotes">Generate Sequence</button>
-  <button id="toggleSequence">Show Answer</button></div>
 
-  <p id="sequenceContainer" style="display: none;">Generated sequence: <span id="sequenceDisplay"></span></p>
-  
+  <div class="availableNotesContainer">
+    <p>Available notes: <span id="notesDisplay"></span></p>
+  </div>
+
+  <div> <label for="numNotes">Number of notes (max 50): </label>
+    <input type="number" id="numNotes" min="1" max="50" value="3" />
+  </div>
+  <div>
+
+
+
+    <label for="maxInterval">Maximum interval between notes (semitones): </label>
+    <input type="number" id="maxInterval" min="1" value="12" />
+  </div>
+
+
+
+  <div> <button id="generateNotes">Generate Sequence</button>
+    <button id="toggleSequence">Show Answer</button>
+  </div>
+
+  <!-- Modal -->
+  <div id="sequenceModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <p>Generated sequence: <span id="sequenceDisplay"></span></p>
+    </div>
+  </div>
+
+
   <h2>Melody generator</h2>
-  
 
-  
-  <button id="toggle-visibility" hidden>Mostrar/Ocultar Ritmo</button>
-  <button id="play-rhythm">Play melody / Change rythm</button>
-  <button id="stop-loop">Stop Loop</button>
+  <div> <button id="toggle-visibility" hidden>Mostrar/Ocultar Ritmo</button>
+    <button id="play-rhythm">Play melody / Change rythm</button>
+    <button id="stop-loop">Stop Loop</button>
+  </div>
 
 
-  <label for="bpmSlider">BPM: <span id="bpmDisplay">120</span></label>
-  <input type="range" id="bpmSlider" min="20" max="300" value="120" />
+
+
 
 
   <div>
@@ -65,9 +85,34 @@
     </select>
     <button id="toggleDrone">Toggle Drone</button>
   </div>
+  <div> <button id="playRandomSound">Play ambient sounds</button>
+    <button id="stopSound">Stop ambient sounds</button>
+  </div>
 
-  <button id="playRandomSound">Play ambient sounds</button>
-  <button id="stopSound">Stop ambient sounds</button>
+  <div> <label for="bpmSlider">BPM: <span id="bpmDisplay">60</span></label>
+    <input type="range" id="bpmSlider" min="20" max="300" value="120" />
+  </div>
+
+
+
+  <div class="piano">
+    <div class="tecla blanca" data-nombre="0">1</div>
+    <div class="tecla negra" data-nombre="1">1#</div>
+    <div class="tecla blanca" data-nombre="2">2</div>
+    <div class="tecla negra" data-nombre="3">2#</div>
+    <div class="tecla blanca" data-nombre="4">3</div>
+    <div class="tecla blanca" data-nombre="5">4</div>
+    <div class="tecla negra" data-nombre="6">4#</div>
+    <div class="tecla blanca" data-nombre="7">5</div>
+    <div class="tecla negra" data-nombre="8">5#</div>
+    <div class="tecla blanca" data-nombre="9">6</div>
+    <div class="tecla negra" data-nombre="10">6#</div>
+    <div class="tecla blanca" data-nombre="11">7</div>
+</div>
+<p id="escala-tonalidad">Escala en tonalidad:</p> <!-- Contenedor para la escala tonalidad -->
+<div>
+
+
 </body>
 
 </html>

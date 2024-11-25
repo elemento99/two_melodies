@@ -49,19 +49,19 @@ body {
   /* Sliders */
   input[type="range"] {
     -webkit-appearance: none;
-    width: 70%;
+    width: 100%;
     background: #333333;
     height: 5px;
     border-radius: 5px;
   }
   
   input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
+    -webkit-appearance: none; 
     height: 15px;
     width: 15px;
     background: #bb86fc;
     border-radius: 50%;
-    cursor: pointer;
+    cursor: pointer;  
   }
   
   /* Containers */
@@ -92,7 +92,7 @@ body {
   }
   
   #bpmSlider {
-    width: 70%;
+    width: 1000%;
   }
   
   /* Dark Theme Adjustments */
@@ -123,3 +123,102 @@ body {
     }
   }
   
+/* Modal Styles */
+.modal {
+  display: none; 
+  position: fixed;
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.8); /* Black with opacity */
+  padding-top: 60px;
+}
+
+.modal-content {
+  background-color: #1e1e1e;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #333333;
+  width: 80%;
+  max-width: 600px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+#sequenceDisplay {
+  color: #bb86fc;
+}
+
+/* Close button (big and visible) */
+.close {
+  color: #fff;
+  font-size: 3rem;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  background-color: #3700b3;
+  padding: 10px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.close:hover {
+  background-color: #bb86fc;
+}
+
+/* Button Styles for Modal */
+button {
+  background-color: #bb86fc;
+  color: #121212;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 5px;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #3700b3;
+  color: #ffffff;
+}
+
+
+
+/*escala adaptable*/
+.piano {
+  display: flex;
+}
+
+.tecla {
+  width: 40px;
+  height: 150px;
+  margin: 2px;
+  cursor: pointer;
+  border: 1px solid black; /* Mantener los bordes de las teclas */
+}
+
+.blanca {
+  background-color: white;
+  z-index: 1;
+  color: black; 
+}
+
+.negra {
+  background-color: #333; /* Color más oscuro para las teclas negras */
+  width: 30px;
+  height: 100px;
+  margin-left: -15px;
+  z-index: 2;
+  border: 1px solid black; /* Mantener el borde */
+}
+
+.presionada {
+  background-color: #ffcc00;
+}

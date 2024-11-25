@@ -251,10 +251,8 @@ bpmSlider.addEventListener('input', () => {
 let currentLoopId = null;
 
 function playRhythm() {
-
     Tone.Transport.stop();
     Tone.Transport.cancel();
-
 
     if (currentLoopId !== null) {
         currentLoopId.dispose();
@@ -262,31 +260,29 @@ function playRhythm() {
 
     const rhythm = generateRandomRhythm();
 
-
-
-
     const combinacion = rhythm.map(item => ({
         nota: item ? item.note : null,
         duracion: item ? item.duration : '4n'
     }));
 
-
-
-
     currentLoopId = new Tone.Loop((time) => {
         combinacion.forEach(({ nota, duracion }, i) => {
             if (nota) {
+                // Ajustar el volumen dinámicamente en cada repetición
+                const volumen = 0.3 + Math.random() * 1; // Rango dinámico de 0.5 a 1.5
                 const durationInSeconds = Tone.Time(duracion).toSeconds();
-                piano.triggerAttackRelease(nota, durationInSeconds, time + i * durationInSeconds);
+                piano.triggerAttackRelease(nota, durationInSeconds, time + i * durationInSeconds, volumen);
+
+                // Imprimir el volumen en la consola
+                console.log(`Nota: ${nota}, Volumen: ${volumen.toFixed(2)}, Duración: ${duracion}`);
             }
         });
     }, '1m');
 
-
     Tone.Transport.start();
     currentLoopId.start(0);
 
-    console.log('Ritmo en bucle:', combinacion);
+    console.log('Iniciando el loop...');
 }
 
 

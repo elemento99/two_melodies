@@ -378,7 +378,8 @@ document
         // Ordenar el arreglo escala y generar la escala inicial en el DOM
         escala.sort((a, b) => a - b);
         generarEscala(key.value, escala); // Asume que keySelect y generarEscala ya están definidos
-        const escalaKey =generarEscala(key, escala)
+        escalaKey =generarEscalaKey(key.value, escala)
+        console.log("escalaKey inicializado", escalaKey)
     }
     inicializarEscala();
 

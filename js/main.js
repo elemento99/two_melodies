@@ -106,15 +106,7 @@ function getNotesByLevel(level, scale) {
 let generatedSequence = []
 
 
-document.getElementById('generateNotes').addEventListener('click', function () {
-    const n = Math.min(50, Math.max(1, parseInt(numNotesInput.value))); // Asegurarse de que n esté entre 1 y 50
-    const maxInterval = parseInt(maxIntervalInput.value);
-    const level = parseInt(slider.value); // Obtener el nivel actual
-    const sequence = generateRandomNotes(n, maxInterval); // Generar la secuencia de notas
-    displaySequence(sequence); // Mostrar la secuencia
-    generatedSequence = sequence; // Guardar la secuencia generada en la variable
-    console.log(generatedSequence)
-});
+
 
 
 function isValidInterval(nextNoteIndex, previousNoteIndex, maxInterval) {
@@ -431,6 +423,7 @@ document
         const keyAuxiliar=key.value
         generarEscala(keyAuxiliar, escala);
         generarEscalaKey(keyAuxiliar, escala);
+        actualizarNotasSeleccionadas()
         
     });
 
@@ -595,7 +588,15 @@ if (notaMaximaIndex > notaMinimaIndex) {
     }
     generateRandomNotesNuevo(5,12,notasParaSecuencia)
 
-
+    document.getElementById('generateNotes').addEventListener('click', function () {
+        const n = Math.min(50, Math.max(1, parseInt(numNotesInput.value))); // Asegurarse de que n esté entre 1 y 50
+        const maxInterval = parseInt(maxIntervalInput.value);
+        
+        const sequence = generateRandomNotesNuevo(n, maxInterval,notasParaSecuencia); // Generar la secuencia de notas
+        displaySequence(sequence); // Mostrar la secuencia
+        generatedSequence = sequence; // Guardar la secuencia generada en la variable
+        console.log("secuencia generada desde el boton generate notes",generatedSequence)
+    });
 
 const fileList = `
       ahntone_c2.mp3

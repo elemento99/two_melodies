@@ -536,13 +536,17 @@ if (notaMaximaIndex > notaMinimaIndex) {
 }
 }
 
+
+let notasParaSecuencia =[]
     // Función para actualizar las notas seleccionadas en el DOM
     function actualizarNotasSeleccionadas() {
         const notasSeleccionadas = generarNotasSeleccionadas();
         const notasFiltradas = filtrarNotasPorEscala(notasSeleccionadas); // Aplicar el filtro
         document.getElementById('resultado').textContent = notasFiltradas.join(', ');
         // Imprimir el array en consola con su nombre
+        notasParaSecuencia=notasFiltradas
         console.log('Notas seleccionadas filtradas:', notasFiltradas);
+        console.log('esta es el conjunto de notas disponibles:', notasParaSecuencia);
     }
 
     // Primero, definir C4 como la nota mínima
@@ -564,6 +568,8 @@ if (notaMaximaIndex > notaMinimaIndex) {
 
     // Inicializar las notas seleccionadas en el DOM
     actualizarNotasSeleccionadas();
+
+    cons
 
 
 

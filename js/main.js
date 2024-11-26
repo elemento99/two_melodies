@@ -60,49 +60,6 @@ const allPianoNotes = [
 
 const key = document.getElementById('key');
 let notasParaSecuencia =[]
-function getNotesByLevel(level, scale) {
-    const indexC4 = allPianoNotes.indexOf('C4');
-    const totalNotes = level;
-
-    let notes = [];
-    const notesCenter = [
-        'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4'
-    ];
-
-    // Expande las notas según el nivel
-    for (let i = 1; i <= level; i++) {
-        const lower = indexC4 - i;
-        const upper = indexC4 + i;
-
-        if (lower >= 0) notes.unshift(allPianoNotes[lower]);
-        if (upper < allPianoNotes.length) notes.push(allPianoNotes[upper]);
-    }
-
-    // Genera las notas de la escala en las octavas disponibles
-    const scaleNotes = [];
-    const lowerOctaveLimit = Math.max(0, 4 - Math.floor(level / 10));
-    const upperOctaveLimit = Math.min(8, 4 + Math.floor(level / 10));
-
-    for (let i = lowerOctaveLimit; i <= upperOctaveLimit; i++) {
-        scale.forEach(note => {
-            const noteWithOctave = `${note}${i}`;
-            if (allPianoNotes.includes(noteWithOctave)) {
-                scaleNotes.push(noteWithOctave);
-            }
-        });
-    }
-
-    // Filtra las notas para que solo aparezcan las que pertenezcan a la escala
-    const scaleNotesSet = new Set(scale.map(note => note)); // Solo las notas de la escala sin la octava
-    const filteredNotes = [...notesCenter, ...notes].filter(note => {
-        const noteBase = note.slice(0, -1); // Extrae la nota sin la octava
-        return scaleNotesSet.has(noteBase); // Asegura que la nota pertenezca a la escala
-    });
-
-    // Combina las notas filtradas con las notas de la escala generada
-    return [...filteredNotes, ...scaleNotes];
-}
-
 let generatedSequence = []
 
 
@@ -113,15 +70,6 @@ function isValidInterval(nextNoteIndex, previousNoteIndex, maxInterval) {
     return Math.abs(nextNoteIndex - previousNoteIndex) <= maxInterval;
 }
 
-
-
-
-function updateNotes(level) {
-    const key = document.getElementById('key').value;
-    const scale = majorScales[key];
-    const availableNotes = getNotesByLevel(level, scale);
-    notesDisplay.textContent = availableNotes.join(', ');
-}
 
 
 function displaySequence(sequence) {
@@ -141,12 +89,6 @@ window.addEventListener('load', function () {
     updateNotes(1);
 });
 
-
-slider.addEventListener('input', function () {
-    const level = parseInt(slider.value);
-    levelValue.textContent = `Level ${level}`;
-    updateNotes(level);
-});
 
 
 const durations = ['8n', '4n', '2n', '16n'];
@@ -541,29 +483,7 @@ if (notaMaximaIndex > notaMinimaIndex) {
     // Inicializar las notas seleccionadas en el DOM
     actualizarNotasSeleccionadas();
 
-    function generateRandomNotes(n, maxInterval, level) {
-        const key = document.getElementById('key').value;
-    
-        const scale = generarEscala(key, escala) 
-        const availableNotes = getNotesByLevel(level, scale);
-    
-        const sequence = [];
-        let previousNoteIndex = Math.floor(Math.random() * availableNotes.length);
-    
-        for (let i = 0; i < n; i++) {
-            let nextNoteIndex;
-            do {
-                nextNoteIndex = Math.floor(Math.random() * availableNotes.length);
-            } while (!isValidInterval(nextNoteIndex, previousNoteIndex, maxInterval));
-    
-            sequence.push(availableNotes[nextNoteIndex]);
-            previousNoteIndex = nextNoteIndex;
-        }
-    
-        return sequence;
-    }
 
-    
     
 
     function generateRandomNotesNuevo(n, maxInterval,notasParaSecuencia) {

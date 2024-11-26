@@ -155,12 +155,12 @@ bpmSlider.addEventListener('input', () => {
     Tone.Transport.bpm.value = bpm;
 });
 
-
 bpmSlider.addEventListener('input', () => {
     const bpm = parseInt(bpmSlider.value, 10);
     bpmDisplay.textContent = bpm;
     Tone.Transport.bpm.value = bpm;
 });
+
 let currentLoopId = null;
 
 function playRhythm() {
@@ -181,32 +181,23 @@ function playRhythm() {
     currentLoopId = new Tone.Loop((time) => {
         combinacion.forEach(({ nota, duracion }, i) => {
             if (nota) {
-                // Ajustar el volumen dinámicamente en cada repetición
-                const volumen = 0.2 + Math.random() * 1; // Rango dinámico de 0.5 a 1.5
+                const volumen = 0.2 + Math.random() * 1;
                 const durationInSeconds = Tone.Time(duracion).toSeconds();
                 piano.triggerAttackRelease(nota, durationInSeconds, time + i * durationInSeconds, volumen);
-
-                // Imprimir el volumen en la consola
-                console.log(`Nota: ${nota}, Volumen: ${volumen.toFixed(2)}, Duración: ${duracion}`);
             }
         });
     }, '1m');
 
     Tone.Transport.start();
     currentLoopId.start(0);
-
-    console.log('Iniciando el loop...');
 }
-
 
 document.getElementById('stop-loop').addEventListener('click', function () {
     if (currentLoopId !== null) {
-        currentLoopId.dispose(); // Detenemos el loop
-        Tone.Transport.stop(); // Detenemos el transporte
-        console.log("Loop detenido.");
+        currentLoopId.dispose();
+        Tone.Transport.stop();
     }
 });
-
 
 const synths = [];
 const brownNoiseSynth = new Tone.Noise('brown').toDestination();
@@ -217,7 +208,6 @@ brownNoiseSynth.connect(reverb);
 
 let isPlaying = false;
 
-
 const octaveSelector = document.getElementById('octaveSelector');
 
 function getSelectedRootNote() {
@@ -226,100 +216,83 @@ function getSelectedRootNote() {
     return `${note}${octave}`;
 }
 
-
 function createDrone(rootNote) {
     const scale = Tone.Frequency(rootNote).harmonize([0, 7, 12]);
 
-
     scale.forEach((freq, index) => {
         const leftOsc = new Tone.Oscillator(freq, 'sine').toDestination();
-        const rightOsc = new Tone.Oscillator(freq * (1 + (index % 2 === 0 ? 0.001 : -0.001)), 'sine').toDestination(); // Desfase mínimo para binaural
+        const rightOsc = new Tone.Oscillator(freq * (1 + (index % 2 === 0 ? 0.001 : -0.001)), 'sine').toDestination();
         leftOsc.volume.value = -22;
         rightOsc.volume.value = -22;
 
-
         synths.push(leftOsc, rightOsc);
-
 
         leftOsc.start();
         rightOsc.start();
     });
 
-
     brownNoiseSynth.start();
 }
 
 async function toggleDrone() {
-    await Tone.start(); // Necesario para que funcione en navegadores modernos
+    await Tone.start();
     if (isPlaying) {
-        // Detener y limpiar todos los osciladores
         synths.forEach((synth) => {
             synth.stop();
-            synth.dispose(); // Liberar recursos del sintetizador
+            synth.dispose();
         });
-        synths.length = 0; // Limpiar la lista de sintetizadores
+        synths.length = 0;
 
-        brownNoiseSynth.stop(); // Detener el brown noise
+        brownNoiseSynth.stop();
         isPlaying = false;
     } else {
-        const rootNote = getSelectedRootNote(); // Usar la nota seleccionada
+        const rootNote = getSelectedRootNote();
         createDrone(rootNote);
         isPlaying = true;
     }
 }
 
+document.getElementById('toggleDrone').addEventListener('click', toggleDrone);
 
-document
-    .getElementById('toggleDrone')
-    .addEventListener('click', toggleDrone);
+const teclas = document.querySelectorAll('.tecla');
+let escala = [];
+let escalaKey = [];
 
-
-    const teclas = document.querySelectorAll('.tecla');
-    let escala = []
-    let escalaKey =[]
-    function inicializarEscala() {
-        teclas.forEach((tecla) => {
-            if (tecla.classList.contains('presionada')) {
-                // Si la tecla ya está marcada como presionada, agregarla a la escala
-                const nombre = tecla.getAttribute('data-nombre');
-                if (!escala.includes(nombre)) {
-                    escala.push(nombre);
-                }
-            }
-        });
-
-        // Ordenar el arreglo escala y generar la escala inicial en el DOM
-        escala.sort((a, b) => a - b);
-        generarEscala(key.value, escala); // Asume que keySelect y generarEscala ya están definidos
-        escalaKey =generarEscalaKey(key.value, escala)
-        console.log("escalaKey inicializado", escalaKey)
-    }
-    inicializarEscala();
-
+function inicializarEscala() {
     teclas.forEach((tecla) => {
-        tecla.addEventListener('click', () => {
-            tecla.classList.toggle('presionada');
+        if (tecla.classList.contains('presionada')) {
             const nombre = tecla.getAttribute('data-nombre');
-    
-            // Agregar o quitar la tecla de la escala
-            if (escala.includes(nombre)) {
-                const index = escala.indexOf(nombre);
-                escala.splice(index, 1);
-            } else {
+            if (!escala.includes(nombre)) {
                 escala.push(nombre);
             }
-    
-            // Ordenar el arreglo de menor a mayor
-            escala.sort((a, b) => a - b);
-    
-            // Generar la nueva escala en el DOM
-            generarEscala(key.value, escala);
-            const escalaKey =generarEscala(key, escala)
-            console.log("cambio en el escalaKey", escalaKey)
-            
-        });
+        }
     });
-    
+
+    escala.sort((a, b) => a - b);
+    generarEscala(key.value, escala);
+    escalaKey = generarEscalaKey(key.value, escala);
+}
+
+inicializarEscala();
+
+teclas.forEach((tecla) => {
+    tecla.addEventListener('click', () => {
+        tecla.classList.toggle('presionada');
+        const nombre = tecla.getAttribute('data-nombre');
+
+        if (escala.includes(nombre)) {
+            const index = escala.indexOf(nombre);
+            escala.splice(index, 1);
+        } else {
+            escala.push(nombre);
+        }
+
+        escala.sort((a, b) => a - b);
+        generarEscala(key.value, escala);
+        escalaKey = generarEscalaKey(key, escala);
+    });
+});
+
     function generarEscala(key, escala) {
         const notasCiclicas = [
             'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G',
@@ -337,7 +310,6 @@ document
         return nuevoArray;
     }
 
-
     function generarEscalaKey(key, escala) {
         const notasCiclicas = [
             'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G',
@@ -352,34 +324,20 @@ document
             const indiceReal = parseInt(nota) + indexTonica;
             nuevoArray.push(notasCiclicas[indiceReal]);
         });
-        escalaKey=nuevoArray
-        console.log("cambio en la escala key desde la función generarEscalaKey:", escalaKey );
+        escalaKey = nuevoArray;
         return nuevoArray;
     }
-    console.log("Key:", key.value);
-    console.log("Escala:", escala);
     
-    console.log("escalaKey", escalaKey);
-
     key.addEventListener('change', () => {
-        const keyAuxiliar=key.value
+        const keyAuxiliar = key.value;
         generarEscala(keyAuxiliar, escala);
         generarEscalaKey(keyAuxiliar, escala);
-        actualizarNotasSeleccionadas()
-        
+        actualizarNotasSeleccionadas();
     });
-
-
-
-
-
-
-//de aca empieza
-
-const escalaPrueba = ['A#', 'B#', 'C#','D#','E#','F','G'];
-
-    let notasFiltradas = []
-    // Poblar los selectores con las notas
+    
+    const escalaPrueba = ['A#', 'B#', 'C#','D#','E#','F','G'];
+    
+    let notasFiltradas = [];
     const notaMinimaSelect = document.getElementById('notaMinima');
     const notaMaximaSelect = document.getElementById('notaMaxima');
     
@@ -393,8 +351,7 @@ const escalaPrueba = ['A#', 'B#', 'C#','D#','E#','F','G'];
         notaMinimaSelect.appendChild(optionMin);
         notaMaximaSelect.appendChild(optionMax);
     });
-
-    // Función para generar el array de notas seleccionadas
+    
     function generarNotasSeleccionadas() {
         const notaMinima = parseInt(notaMinimaSelect.value, 10);
         const notaMaxima = parseInt(notaMaximaSelect.value, 10);
@@ -404,92 +361,65 @@ const escalaPrueba = ['A#', 'B#', 'C#','D#','E#','F','G'];
             return [];
         }
     }
-
-// Función para aplicar el filtro, solo mostrar notas que estén en la escala
-function filtrarNotasPorEscala(notasSeleccionadas) {
-return notasSeleccionadas.filter(note => {
-    // Extraer la clave musical ignorando la octava
-    const claveMusical = note.replace(/[0-9]/g, ''); // Elimina cualquier dígito (la octava)
-    return escalaKey.includes(claveMusical); // Verifica si la clave está en la escala
-});
-}
-
-
-
-// Función para actualizar las opciones del selector de nota máxima
-function actualizarNotaMaxima() {
-const notaMinimaIndex = parseInt(notaMinimaSelect.value, 10);
-const notaMaximaIndex = parseInt(notaMaximaSelect.value, 10);
-
-// Si la nueva nota mínima es mayor que la nota máxima actual
-if (notaMinimaIndex > notaMaximaIndex) {
-    // Ajustar automáticamente la nota máxima al siguiente valor tras la mínima
-    notaMaximaSelect.value = notaMinimaIndex + 1;
-}
-
-// Filtrar las notas que son mayores que la nota mínima seleccionada
-const opcionesMaximas = allPianoNotes.slice(notaMinimaIndex + 1);
-
-// Limpiar las opciones actuales de nota máxima
-notaMaximaSelect.innerHTML = '';
-
-// Agregar las nuevas opciones para la nota máxima
-opcionesMaximas.forEach((note, index) => {
-    const optionMax = document.createElement('option');
-    optionMax.value = notaMinimaIndex + 1 + index;
-    optionMax.textContent = note;
-    notaMaximaSelect.appendChild(optionMax);
-});
-
-// Restaurar el valor actual de nota máxima si sigue siendo válido
-if (notaMaximaIndex > notaMinimaIndex) {
-    notaMaximaSelect.value = notaMaximaIndex;
-} else {
-    // Si no es válido, ajustamos al mínimo permitido
-    notaMaximaSelect.value = notaMinimaIndex + 1;
-}
-}
-
-
-
-    // Función para actualizar las notas seleccionadas en el DOM
+    
+    function filtrarNotasPorEscala(notasSeleccionadas) {
+        return notasSeleccionadas.filter(note => {
+            const claveMusical = note.replace(/[0-9]/g, '');
+            return escalaKey.includes(claveMusical);
+        });
+    }
+    
+    function actualizarNotaMaxima() {
+        const notaMinimaIndex = parseInt(notaMinimaSelect.value, 10);
+        const notaMaximaIndex = parseInt(notaMaximaSelect.value, 10);
+    
+        if (notaMinimaIndex > notaMaximaIndex) {
+            notaMaximaSelect.value = notaMinimaIndex + 1;
+        }
+    
+        const opcionesMaximas = allPianoNotes.slice(notaMinimaIndex + 1);
+    
+        notaMaximaSelect.innerHTML = '';
+    
+        opcionesMaximas.forEach((note, index) => {
+            const optionMax = document.createElement('option');
+            optionMax.value = notaMinimaIndex + 1 + index;
+            optionMax.textContent = note;
+            notaMaximaSelect.appendChild(optionMax);
+        });
+    
+        if (notaMaximaIndex > notaMinimaIndex) {
+            notaMaximaSelect.value = notaMaximaIndex;
+        } else {
+            notaMaximaSelect.value = notaMinimaIndex + 1;
+        }
+    }
+    
     function actualizarNotasSeleccionadas() {
         const notasSeleccionadas = generarNotasSeleccionadas();
-        const notasFiltradas = filtrarNotasPorEscala(notasSeleccionadas); // Aplicar el filtro
+        const notasFiltradas = filtrarNotasPorEscala(notasSeleccionadas);
         document.getElementById('resultado').textContent = notasFiltradas.join(', ');
-        // Imprimir el array en consola con su nombre
-        notasParaSecuencia=notasFiltradas
-        console.log('Notas seleccionadas filtradas:', notasFiltradas);
-        console.log('esta es el conjunto de notas disponibles:', notasParaSecuencia);
+        notasParaSecuencia = notasFiltradas;
     }
-
-    // Primero, definir C4 como la nota mínima
+    
     const defaultMinIndex = allPianoNotes.indexOf('C4');
     notaMinimaSelect.value = defaultMinIndex;
-    actualizarNotaMaxima(); // Actualizar las opciones de la nota máxima después de definir la mínima
-
-    // Luego, establecer C5 como la nota máxima por defecto
+    actualizarNotaMaxima();
+    
     const defaultMaxIndex = allPianoNotes.indexOf('C5');
     notaMaximaSelect.value = defaultMaxIndex;
-
-    // Escuchar los cambios en los selectores para actualizar las notas seleccionadas
+    
     notaMinimaSelect.addEventListener('change', function() {
         actualizarNotaMaxima();
         actualizarNotasSeleccionadas();
     });
     
     notaMaximaSelect.addEventListener('change', actualizarNotasSeleccionadas);
-
-    // Inicializar las notas seleccionadas en el DOM
+    
     actualizarNotasSeleccionadas();
-
-
     
-
-    function generateRandomNotesNuevo(n, maxInterval,notasParaSecuencia) {
- 
-        const availableNotes = notasParaSecuencia
-    
+    function generateRandomNotesNuevo(n, maxInterval, notasParaSecuencia) {
+        const availableNotes = notasParaSecuencia;
         const sequence = [];
         let previousNoteIndex = Math.floor(Math.random() * availableNotes.length);
     
@@ -502,22 +432,20 @@ if (notaMaximaIndex > notaMinimaIndex) {
             sequence.push(availableNotes[nextNoteIndex]);
             previousNoteIndex = nextNoteIndex;
         }
-        console.log("secuencia desde el generateRandomNuevo",sequence)
         return sequence;
-       
     }
-    generateRandomNotesNuevo(5,12,notasParaSecuencia)
-
+    
+    generateRandomNotesNuevo(5, 12, notasParaSecuencia);
+    
     document.getElementById('generateNotes').addEventListener('click', function () {
-        const n = Math.min(50, Math.max(1, parseInt(numNotesInput.value))); // Asegurarse de que n esté entre 1 y 50
+        const n = Math.min(50, Math.max(1, parseInt(numNotesInput.value)));
         const maxInterval = parseInt(maxIntervalInput.value);
         
-        const sequence = generateRandomNotesNuevo(n, maxInterval,notasParaSecuencia); // Generar la secuencia de notas
-        displaySequence(sequence); // Mostrar la secuencia
-        generatedSequence = sequence; // Guardar la secuencia generada en la variable
-        console.log("secuencia generada desde el boton generate notes",generatedSequence)
+        const sequence = generateRandomNotesNuevo(n, maxInterval, notasParaSecuencia);
+        displaySequence(sequence);
+        generatedSequence = sequence;
     });
-
+    
 const fileList = `
       ahntone_c2.mp3
       ahntone_c3.mp3

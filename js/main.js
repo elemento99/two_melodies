@@ -85,9 +85,6 @@ const numNotesInput = document.getElementById('numNotes');
 const maxIntervalInput = document.getElementById('maxInterval');
 
 
-window.addEventListener('load', function () {
-    updateNotes(1);
-});
 
 
 
@@ -95,16 +92,16 @@ const durations = ['8n', '4n', '2n', '16n'];
 
 function generateRandomRhythm() {
     const rhythm = [];
-    const notesCopy = [...generatedSequence]; // Copia de las notas disponibles
+    const notesCopy = [...generatedSequence]; 
 
     for (let i = 0; i < 16; i++) {
-        const noteOrSilence = Math.random() < 0.45; // Probabilidad de silencio
+        const noteOrSilence = Math.random() < 0.45; 
         if (noteOrSilence) {
-            rhythm.push(null); // Agregar silencio
+            rhythm.push(null); 
         } else {
             if (notesCopy.length > 0) {
                 const noteIndex = Math.floor(Math.random() * notesCopy.length);
-                const note = notesCopy.splice(noteIndex, 1)[0]; // Obtener una nota aleatoria y eliminarla
+                const note = notesCopy.splice(noteIndex, 1)[0]; 
                 const duration =
                     durations[Math.floor(Math.random() * durations.length)];
                 rhythm.push({ note, duration });
@@ -120,11 +117,10 @@ document.getElementById('play-rhythm').addEventListener('click', playRhythm);
 
 function toggleVisibility() {
     const rhythmContainer = document.getElementById('rhythm-container');
-    // Cambiar la visibilidad del contenedor
     if (rhythmContainer.style.display === 'none') {
-        rhythmContainer.style.display = 'block'; // Mostrar
+        rhythmContainer.style.display = 'block'; 
     } else {
-        rhythmContainer.style.display = 'none'; // Ocultar
+        rhythmContainer.style.display = 'none'; 
     }
 }
 
@@ -132,17 +128,14 @@ const modal = document.getElementById('sequenceModal');
 const btn = document.getElementById('toggleSequence');
 const closeBtn = document.getElementById('closeModal');
 
-// Mostrar el modal al hacer clic en el botón
 btn.addEventListener('click', function () {
     modal.style.display = 'block';
 });
 
-// Cerrar el modal al hacer clic en el botón de cierre (X)
 closeBtn.addEventListener('click', function () {
     modal.style.display = 'none';
 });
 
-// Cerrar el modal si se hace clic fuera de él
 window.addEventListener('click', function (event) {
     if (event.target === modal) {
         modal.style.display = 'none';
@@ -290,7 +283,10 @@ teclas.forEach((tecla) => {
         escala.sort((a, b) => a - b);
         generarEscala(key.value, escala);
         escalaKey = generarEscalaKey(key, escala);
+        console.log("desde teclas", escalaKey)
+        actualizarNotasSeleccionadas();
     });
+
 });
 
     function generarEscala(key, escala) {
@@ -322,7 +318,7 @@ teclas.forEach((tecla) => {
         const nuevoArray = [];
         escala.forEach((nota) => {
             const indiceReal = parseInt(nota) + indexTonica;
-            nuevoArray.push(notasCiclicas[indiceReal]);
+            nuevoArray.push(notasCiclicas[indiceReal+1]);
         });
         escalaKey = nuevoArray;
         return nuevoArray;
@@ -2849,13 +2845,13 @@ const fileList = `
 
 
       function transformToEffectsLibrary(fileList) {
-        console.log('Procesando fileList:', fileList); // Verifica el contenido del fileList
+        console.log('Procesando fileList:', fileList);
         const effects = fileList
             .split('\n')
             .map((file) => file.trim())
             .filter((file) => file !== '');
     
-        console.log('Efectos procesados:', effects); // Verifica que los efectos se han procesado correctamente
+        console.log('Efectos procesados:', effects);
     
         const effectsLibrary = {
             randomSounds: effects.map(
@@ -2863,12 +2859,11 @@ const fileList = `
             ),
         };
     
-        console.log('Librería de efectos:', effectsLibrary); // Verifica el contenido de la librería de efectos
+        console.log('Librería de efectos:', effectsLibrary); 
     
         return effectsLibrary;
     }
     
-    // Suponiendo que fileList ya está definido en algún lugar
     const effectsLibrary = transformToEffectsLibrary(fileList);
     
     let sampler = null;

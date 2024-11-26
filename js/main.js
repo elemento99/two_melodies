@@ -85,6 +85,9 @@ const numNotesInput = document.getElementById('numNotes');
 const maxIntervalInput = document.getElementById('maxInterval');
 
 
+window.addEventListener('load', function () {
+    updateNotes(1);
+});
 
 
 
@@ -251,6 +254,26 @@ const teclas = document.querySelectorAll('.tecla');
 let escala = [];
 let escalaKey = [];
 
+
+
+function generarEscalaKey(key, escala) {
+    const notasCiclicas = [
+        'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G',
+        'G#', 'A', 'A#', 'B',
+        'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G',
+        'G#', 'A', 'A#'
+    ];
+    const indexTonica = notasCiclicas.indexOf(key);
+    
+    const nuevoArray = [];
+    escala.forEach((nota) => {
+        const indiceReal = parseInt(nota) + indexTonica;
+        nuevoArray.push(notasCiclicas[indiceReal]);
+    });
+    escalaKey = nuevoArray;
+    return nuevoArray;
+}
+
 function inicializarEscala() {
     teclas.forEach((tecla) => {
         if (tecla.classList.contains('presionada')) {
@@ -264,9 +287,10 @@ function inicializarEscala() {
     escala.sort((a, b) => a - b);
     generarEscala(key.value, escala);
     escalaKey = generarEscalaKey(key.value, escala);
+    
 }
-
 inicializarEscala();
+
 
 teclas.forEach((tecla) => {
     tecla.addEventListener('click', () => {
@@ -282,11 +306,10 @@ teclas.forEach((tecla) => {
 
         escala.sort((a, b) => a - b);
         generarEscala(key.value, escala);
-        escalaKey = generarEscalaKey(key, escala);
-        console.log("desde teclas", escalaKey)
-        actualizarNotasSeleccionadas();
+        escalaKey = generarEscalaKey(key.value, escala);
+        console.log("escalaKey desde teclas", escalaKey )
+        actualizarNotasSeleccionadas()
     });
-
 });
 
     function generarEscala(key, escala) {
@@ -296,7 +319,7 @@ teclas.forEach((tecla) => {
             'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G',
             'G#', 'A', 'A#'
         ];
-        const indexTonica = notasCiclicas.indexOf(key);
+        const indexTonica = notasCiclicas.indexOf(key.value);
         const nuevoArray = [];
         escala.forEach((nota) => {
             const indiceReal = parseInt(nota) + indexTonica;
@@ -306,28 +329,12 @@ teclas.forEach((tecla) => {
         return nuevoArray;
     }
 
-    function generarEscalaKey(key, escala) {
-        const notasCiclicas = [
-            'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G',
-            'G#', 'A', 'A#', 'B',
-            'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G',
-            'G#', 'A', 'A#'
-        ];
-        const indexTonica = notasCiclicas.indexOf(key);
-        
-        const nuevoArray = [];
-        escala.forEach((nota) => {
-            const indiceReal = parseInt(nota) + indexTonica;
-            nuevoArray.push(notasCiclicas[indiceReal+1]);
-        });
-        escalaKey = nuevoArray;
-        return nuevoArray;
-    }
-    
+
     key.addEventListener('change', () => {
         const keyAuxiliar = key.value;
         generarEscala(keyAuxiliar, escala);
-        generarEscalaKey(keyAuxiliar, escala);
+        escalaKey=generarEscalaKey(keyAuxiliar, escala);
+        console.log("escaleKEy desde el key listener", escalaKey)
         actualizarNotasSeleccionadas();
     });
     
@@ -2845,7 +2852,7 @@ const fileList = `
 
 
       function transformToEffectsLibrary(fileList) {
-        console.log('Procesando fileList:', fileList);
+        console.log('Procesando fileList:', fileList); // Verifica el contenido del fileList
         const effects = fileList
             .split('\n')
             .map((file) => file.trim())

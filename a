@@ -1,0 +1,32 @@
+      function obtenerNotasPorNivel(nivel) {
+        const indexC4 = todasLasNotasPiano.indexOf('C4');
+       
+
+        let notas = [];
+        const notasCentro = [
+          'C4',
+          'C#4',
+          'D4',
+          'D#4',
+          'E4',
+          'F4',
+          'F#4',
+          'G4',
+          'G#4',
+          'A4',
+          'A#4',
+          'B4',
+        ];
+
+        for (let i = 1; i <= nivel; i++) {
+          const abajo = indexC4 - i;
+          const arriba = indexC4 + i+12;
+
+          if (abajo >= 0) notas.unshift(todasLasNotasPiano[abajo]);
+          if (arriba < todasLasNotasPiano.length)
+            notas.push(todasLasNotasPiano[arriba]);
+        }
+
+        // Se combinan las notas del centro y las de la expansión del nivel
+        return [...notasCentro, ...notas];
+      }

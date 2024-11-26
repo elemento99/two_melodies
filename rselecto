@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selector de Notas con Nombres</title>
+</head>
+<body>
+    <h1>Selector de Notas de Piano</h1>
+    <form id="notaForm">
+        <label for="notaMinima">Nota Mínima:</label>
+        <select id="notaMinima"></select>
+        <br>
+        <label for="notaMaxima">Nota Máxima:</label>
+        <select id="notaMaxima"></select>
+        <br>
+    </form>
+    <h2>Notas Seleccionadas:</h2>
+    <p id="resultado"></p>
+
+    <script>
+        const allPianoNotes = [
+            'C0', 'C#0', 'D0', 'D#0', 'E0', 'F0', 'F#0', 'G0', 'G#0', 'A0', 'A#0', 'B0',
+            'C1', 'C#1', 'D1', 'D#1', 'E1', 'F1', 'F#1', 'G1', 'G#1', 'A1', 'A#1', 'B1',
+            'C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2',
+            'C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3',
+            'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4',
+            'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5',
+            'C6', 'C#6', 'D6', 'D#6', 'E6', 'F6', 'F#6', 'G6', 'G#6', 'A6', 'A#6', 'B6',
+            'C7', 'C#7', 'D7', 'D#7', 'E7', 'F7', 'F#7', 'G7', 'G#7', 'A7', 'A#7', 'B7',
+            'C8'
+        ];
+
+        // Constante escala que queremos filtrar (solo mostrar las notas que estén en esta lista)
+        const escala = ['A#', 'B#', 'C#','D#','E#','F','G'];
+
+        // Poblar los selectores con las notas
+        const notaMinimaSelect = document.getElementById('notaMinima');
+        const notaMaximaSelect = document.getElementById('notaMaxima');
+        
+        allPianoNotes.forEach((note, index) => {
+            const optionMin = document.createElement('option');
+            const optionMax = document.createElement('option');
+            optionMin.value = index;
+            optionMin.textContent = note;
+            optionMax.value = index;
+            optionMax.textContent = note;
+            notaMinimaSelect.appendChild(optionMin);
+            notaMaximaSelect.appendChild(optionMax);
+        });
+
+        // Función para generar el array de notas seleccionadas
+        function generarNotasSeleccionadas() {
+            const notaMinima = parseInt(notaMinimaSelect.value, 10);
+            const notaMaxima = parseInt(notaMaximaSelect.value, 10);
+            if (notaMinima <= notaMaxima) {
+                return allPianoNotes.slice(notaMinima, notaMaxima + 1);
+            } else {
+                return [];
+            }
+        }
+
+// Función para aplicar el filtro, solo mostrar notas que estén en la escala
+function filtrarNotasPorEscala(notasSeleccionadas) {
+    return notasSeleccionadas.filter(note => {
+        // Extraer la clave musical ignorando la octava
+        const claveMusical = note.replace(/[0-9]/g, ''); // Elimina cualquier dígito (la octava)
+        return escala.includes(claveMusical); // Verifica si la clave está en la escala
+    });
+}
+
+
+
+// Función para actualizar las opciones del selector de nota máxima
+function actualizarNotaMaxima() {
+    const notaMinimaIndex = parseInt(notaMinimaSelect.value, 10);
+    const notaMaximaIndex = parseInt(notaMaximaSelect.value, 10);
+
+    // Si la nueva nota mínima es mayor que la nota máxima actual
+    if (notaMinimaIndex > notaMaximaIndex) {
+        // Ajustar automáticamente la nota máxima al siguiente valor tras la mínima
+        notaMaximaSelect.value = notaMinimaIndex + 1;
+    }
+
+    // Filtrar las notas que son mayores que la nota mínima seleccionada
+    const opcionesMaximas = allPianoNotes.slice(notaMinimaIndex + 1);
+
+    // Limpiar las opciones actuales de nota máxima
+    notaMaximaSelect.innerHTML = '';
+
+    // Agregar las nuevas opciones para la nota máxima
+    opcionesMaximas.forEach((note, index) => {
+        const optionMax = document.createElement('option');
+        optionMax.value = notaMinimaIndex + 1 + index;
+        optionMax.textContent = note;
+        notaMaximaSelect.appendChild(optionMax);
+    });
+
+    // Restaurar el valor actual de nota máxima si sigue siendo válido
+    if (notaMaximaIndex > notaMinimaIndex) {
+        notaMaximaSelect.value = notaMaximaIndex;
+    } else {
+        // Si no es válido, ajustamos al mínimo permitido
+        notaMaximaSelect.value = notaMinimaIndex + 1;
+    }
+}
+
+        // Función para actualizar las notas seleccionadas en el DOM
+        function actualizarNotasSeleccionadas() {
+            const notasSeleccionadas = generarNotasSeleccionadas();
+            const notasFiltradas = filtrarNotasPorEscala(notasSeleccionadas); // Aplicar el filtro
+            document.getElementById('resultado').textContent = notasFiltradas.join(', ');
+            // Imprimir el array en consola con su nombre
+            console.log('Notas seleccionadas filtradas:', notasFiltradas);
+        }
+
+        // Primero, definir C4 como la nota mínima
+        const defaultMinIndex = allPianoNotes.indexOf('C4');
+        notaMinimaSelect.value = defaultMinIndex;
+        actualizarNotaMaxima(); // Actualizar las opciones de la nota máxima después de definir la mínima
+
+        // Luego, establecer C5 como la nota máxima por defecto
+        const defaultMaxIndex = allPianoNotes.indexOf('C5');
+        notaMaximaSelect.value = defaultMaxIndex;
+
+        // Escuchar los cambios en los selectores para actualizar las notas seleccionadas
+        notaMinimaSelect.addEventListener('change', function() {
+            actualizarNotaMaxima();
+            actualizarNotasSeleccionadas();
+        });
+        
+        notaMaximaSelect.addEventListener('change', actualizarNotasSeleccionadas);
+
+        // Inicializar las notas seleccionadas en el DOM
+        actualizarNotasSeleccionadas();
+    </script>
+</body>
+</html>

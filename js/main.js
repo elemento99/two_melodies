@@ -59,7 +59,7 @@ const allPianoNotes = [
 ];
 
 const key = document.getElementById('key');
-
+let notasParaSecuencia =[]
 function getNotesByLevel(level, scale) {
     const indexC4 = allPianoNotes.indexOf('C4');
     const totalNotes = level;
@@ -110,7 +110,7 @@ document.getElementById('generateNotes').addEventListener('click', function () {
     const n = Math.min(50, Math.max(1, parseInt(numNotesInput.value))); // Asegurarse de que n esté entre 1 y 50
     const maxInterval = parseInt(maxIntervalInput.value);
     const level = parseInt(slider.value); // Obtener el nivel actual
-    const sequence = generateRandomNotes(n, maxInterval, level); // Generar la secuencia de notas
+    const sequence = generateRandomNotes(n, maxInterval); // Generar la secuencia de notas
     displaySequence(sequence); // Mostrar la secuencia
     generatedSequence = sequence; // Guardar la secuencia generada en la variable
     console.log(generatedSequence)
@@ -122,27 +122,6 @@ function isValidInterval(nextNoteIndex, previousNoteIndex, maxInterval) {
 }
 
 
-function generateRandomNotes(n, maxInterval, level) {
-    const key = document.getElementById('key').value;
-
-    const scale = generarEscala(key, escala) 
-    const availableNotes = getNotesByLevel(level, scale);
-
-    const sequence = [];
-    let previousNoteIndex = Math.floor(Math.random() * availableNotes.length);
-
-    for (let i = 0; i < n; i++) {
-        let nextNoteIndex;
-        do {
-            nextNoteIndex = Math.floor(Math.random() * availableNotes.length);
-        } while (!isValidInterval(nextNoteIndex, previousNoteIndex, maxInterval));
-
-        sequence.push(availableNotes[nextNoteIndex]);
-        previousNoteIndex = nextNoteIndex;
-    }
-
-    return sequence;
-}
 
 
 function updateNotes(level) {
@@ -537,7 +516,7 @@ if (notaMaximaIndex > notaMinimaIndex) {
 }
 
 
-let notasParaSecuencia =[]
+
     // Función para actualizar las notas seleccionadas en el DOM
     function actualizarNotasSeleccionadas() {
         const notasSeleccionadas = generarNotasSeleccionadas();
@@ -569,9 +548,52 @@ let notasParaSecuencia =[]
     // Inicializar las notas seleccionadas en el DOM
     actualizarNotasSeleccionadas();
 
-    cons
+    function generateRandomNotes(n, maxInterval, level) {
+        const key = document.getElementById('key').value;
+    
+        const scale = generarEscala(key, escala) 
+        const availableNotes = getNotesByLevel(level, scale);
+    
+        const sequence = [];
+        let previousNoteIndex = Math.floor(Math.random() * availableNotes.length);
+    
+        for (let i = 0; i < n; i++) {
+            let nextNoteIndex;
+            do {
+                nextNoteIndex = Math.floor(Math.random() * availableNotes.length);
+            } while (!isValidInterval(nextNoteIndex, previousNoteIndex, maxInterval));
+    
+            sequence.push(availableNotes[nextNoteIndex]);
+            previousNoteIndex = nextNoteIndex;
+        }
+    
+        return sequence;
+    }
 
+    
+    
 
+    function generateRandomNotesNuevo(n, maxInterval,notasParaSecuencia) {
+ 
+        const availableNotes = notasParaSecuencia
+    
+        const sequence = [];
+        let previousNoteIndex = Math.floor(Math.random() * availableNotes.length);
+    
+        for (let i = 0; i < n; i++) {
+            let nextNoteIndex;
+            do {
+                nextNoteIndex = Math.floor(Math.random() * availableNotes.length);
+            } while (!isValidInterval(nextNoteIndex, previousNoteIndex, maxInterval));
+    
+            sequence.push(availableNotes[nextNoteIndex]);
+            previousNoteIndex = nextNoteIndex;
+        }
+        console.log("secuencia desde el generateRandomNuevo",sequence)
+        return sequence;
+       
+    }
+    generateRandomNotesNuevo(5,12,notasParaSecuencia)
 
 
 

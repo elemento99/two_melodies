@@ -77,9 +77,9 @@ function displaySequence(sequence) {
 }
 
 
-const slider = document.getElementById('difficultyLevel');
-const levelValue = document.getElementById('levelValue');
-const notesDisplay = document.getElementById('notesDisplay');
+
+
+
 const sequenceDisplay = document.getElementById('sequenceDisplay');
 const numNotesInput = document.getElementById('numNotes');
 const maxIntervalInput = document.getElementById('maxInterval');
